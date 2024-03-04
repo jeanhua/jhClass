@@ -1,9 +1,10 @@
 #pragma once
 #include<string>
 #include<iostream>
+#include<cmath>
 using namespace std;
 
-//jhString类
+//jhString类:字符串类型
 class jhString
 {
 public:
@@ -16,208 +17,65 @@ public:
 	jhString operator=(jhString str);
 	jhString operator+=(jhString str);
 	bool operator==(jhString str);
+	//字符串转换为整型数据(如果可以)
 	int to_int();
+	//字符串转换为浮点型数据(如果可以)
 	float to_float();
+	//返回字符串索引，从0开始
+	int indexOf(string str);
+	//返回字符串索引，从0开始
+	int indexOf(jhString str);
+	//转换为std::string
 	string to_stdString();
+	//字符串截取
 	string substr(int begin, int end);
+	//字符串截取
 	string substr(string leftStr, string rightStr);
 
 private:
 	string str;
 };
-ostream& operator<<(ostream& cout, jhString& str)
-{
-	cout << str.str;
-	return cout;
-}
-istream& operator>>(istream& cin, jhString& str)
-{
-	cin >> str.str;
-	return cin;
-}
-jhString::jhString()
-{
-	this->str = "";
-}
-jhString::jhString(string str)
-{
-	this->str = str;
-}
-jhString::jhString(const char* str)
-{
-	this->str = string(str);
-}
-jhString jhString::operator+(jhString str)
-{
-	return jhString(this->str+str.str);
-}
-jhString jhString::operator=(jhString str)
-{
-	this->str = str.str;
-	return *this;
-}
-jhString jhString::operator+=(jhString str)
-{
-	this->str += str.str;
-	return *this;
-}
-bool jhString::operator==(jhString str)
-{
-	if (this->str == str.str)
-	{
-		return true;
-	}
-	else return false;
-}
-int jhString::to_int()
-{
-	return atoi(this->str.c_str());
-}
-float jhString::to_float()
-{
-	return atof(this->str.c_str());
-}
-string jhString::to_stdString()
-{
-	return this->str;
-}
-string jhString::substr(int begin, int end)
-{
-	if (end <= begin)
-		return this->str.substr(begin, end - begin + 1);
-	else
-		return this->str;
-}
-string jhString::substr(string leftStr, string rightStr)//取出中间字符串
-{
-	int left = this->str.find(leftStr);
-	int right = this->str.find(rightStr);
-	if (left==-1)return "";//找不到左边，返回空
-	if (right!=-1)//找到右边
-	{
-		if (left < right)
-		{
-			return this->str.substr(left + leftStr.length(), right - (left + leftStr.length()));
-		}
-		else//左边在右边之后，返回右边字符串(leftStr)到末尾
-			return this->str.substr(left+1);
-	}
-	else//找不到右边，截取从左边到末尾
-		return this->str.substr(left+1);
-}
 
-
-
-
-//jhNum类
-class jhNum
+//jhFraction类:s/m分数类
+class jhFraction
 {
 public:
-	friend ostream& operator<<(ostream& cout, jhNum& num);
-	friend istream& operator>>(istream& cin, jhNum& num);
-	jhNum();
-	jhNum(int sm);
-	jhNum(int s,int m);
+	friend ostream& operator<<(ostream& cout, jhFraction& num);
+	friend istream& operator>>(istream& cin, jhFraction& num);
+	jhFraction();
+	jhFraction(int sm);
+	jhFraction(int s,int m);
 	void simplify();
 	float to_float();
-	jhNum operator+(jhNum num);
-	jhNum operator-(jhNum num);
-	jhNum operator*(jhNum num);
-	jhNum operator/(jhNum num);
-	jhNum& operator+=(jhNum num);
+	jhFraction operator+(jhFraction& num);
+	jhFraction operator-(jhFraction& num);
+	jhFraction operator*(jhFraction& num);
+	jhFraction operator/(jhFraction& num);
+	bool operator>(jhFraction& num);
+	bool operator>(float num);
+	bool operator>=(jhFraction& num);
+	bool operator>=(float num);
+	bool operator<(jhFraction& num);
+	bool operator<(float num);
+	bool operator<=(jhFraction& num);
+	bool operator<=(float num);
+	bool operator==(jhFraction& num);
+	bool operator==(float num);
+	jhFraction& operator+=(jhFraction& num);
 private:
 	int s, m;/* （s/m分数类型）*/
 };
-ostream& operator<<(ostream& cout, jhNum& num)
-{
-	if (num.m != 1&&num.s!=0)
-		cout << num.s << "/" << num.m;
-	else
-		cout << num.s;
-	return cout;
-}
-istream& operator>>(istream& cin, jhNum& num)
-{
-	int s, m;
-	scanf("%d/%d", &s, &m);
-	num.s = s;
-	if (m != 0)
-		num.m = m;
-	else
-		num.m = 1;
-	num.simplify();
-	return cin;
-}
-void jhNum::simplify()
-{
-	if (s >= 0 && m > 0)
-	{
-		for (int i = 1; i <= (s < m ? s : m); i++)
-		{
-			if (s % i == 0 && m % i == 0)
-			{
-				s /= i; m /= i;
-			}
-		}
-	}
-	if (s <= 0 && m > 0)
-	{
-		s = -s;
-		for (int i = 1; i <= (s < m ? s : m); i++)
-		{
-			if (s % i == 0 && m % i == 0)
-			{
-				s /= i; m /= i;
-			}
-		}
-		s = -s;
-	}
-}
-jhNum::jhNum()
-{
-	s = 0; m = 1;
-}
-jhNum::jhNum(int sm)
-{
-	s = sm;
-	m = 1;
-}
-jhNum::jhNum(int s,int m)
-{
-	if ((s < 0 && m < 0)|| (s > 0 && m < 0))
-	{
-		s = -s; m = -m;
-	}
-	this->s = s;
-	if (m != 0)
-		this->m = m;
-	else
-		this->m = 1;
-	simplify();
-}
-float jhNum::to_float()
-{
-	return float(s) / m;
-}
 
-jhNum jhNum::operator+(jhNum num)
+//jhVector2类，二维向量，坐标
+class jhVector2
 {
-	return jhNum(this->s * num.m + this->m * num.s, this->m * num.m);
-}
-jhNum jhNum::operator-(jhNum num)
-{
-	return jhNum(this->s * num.m - this->m * num.s, this->m * num.m);
-}
-jhNum jhNum::operator*(jhNum num)
-{
-	return jhNum(this->s * num.s, this->m * num.m);
-}
-jhNum jhNum::operator/(jhNum num)
-{
-	return jhNum(this->s * num.m , this->m * num.s);
-}
-jhNum& jhNum::operator+=(jhNum num)
-{
-	*this = *this + num;
-	return *this;
-}
+public:
+	float x, y;
+	jhVector2();
+	jhVector2(float x,float y);
+	jhVector2& operator=(jhVector2& v2);
+	jhVector2 operator+(jhVector2& v2);
+	jhVector2 operator-(jhVector2& v2);
+	//求坐标距离
+	double destance(jhVector2& objective);
+};
