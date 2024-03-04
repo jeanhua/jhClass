@@ -76,6 +76,7 @@ public:
 	jhVector2& operator=(jhVector2& v2);
 	jhVector2 operator+(jhVector2& v2);
 	jhVector2 operator-(jhVector2& v2);
+	bool operator==(jhVector2 & v2);
 	//Çó×ø±ê¾àÀë
 	double destance(jhVector2& objective);
 };

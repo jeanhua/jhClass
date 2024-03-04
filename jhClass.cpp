@@ -283,6 +283,13 @@ jhVector2 jhVector2::operator-(jhVector2& v2)
 {
 	return jhVector2(this->x - v2.x, this->y - v2.y);
 }
+bool jhVector2::operator==(jhVector2& v2)
+{
+	if (this->x == v2.x && this->y == v2.y)
+		return true;
+	else
+		return false;
+}
 double jhVector2::destance(jhVector2& obj)
 {
 	return sqrt(pow(this->x - obj.x, 2) + pow(this->y - obj.y, 2));
