@@ -74,19 +74,23 @@ string jhString::substr(int begin, int end)
 string jhString::substr(string leftStr, string rightStr)//»°≥ˆ÷–º‰◊÷∑˚¥Æ
 {
 	int left = this->str.find(leftStr);
-	int right = this->str.find(rightStr);
-	if (left == -1)return "";//’“≤ªµΩ◊Û±ﬂ£¨∑µªÿø’
+	int right;
+	if (left == -1)
+	{
+		return "";//’“≤ªµΩ◊Û±ﬂ£¨∑µªÿø’
+	}
+	else
+	{
+		right = this->str.find(rightStr,left);
+	}
 	if (right != -1)//’“µΩ”“±ﬂ
 	{
-		if (left < right)
-		{
-			return this->str.substr(left + leftStr.length(), right - (left + leftStr.length()));
-		}
-		else//◊Û±ﬂ‘⁄”“±ﬂ÷Æ∫Û£¨∑µªÿ”“±ﬂ◊÷∑˚¥Æ(leftStr)µΩƒ©Œ≤
-			return this->str.substr(left + 1);
+		return this->str.substr(left + leftStr.length(), right - (left + leftStr.length()));
 	}
 	else//’“≤ªµΩ”“±ﬂ£¨Ωÿ»°¥”◊Û±ﬂµΩƒ©Œ≤
+	{
 		return this->str.substr(left + 1);
+	}
 }
 
 
@@ -294,3 +298,14 @@ double jhVector2::destance(jhVector2& obj)
 {
 	return sqrt(pow(this->x - obj.x, 2) + pow(this->y - obj.y, 2));
 }
+
+double jhVector2::cross_product(jhVector2& objective)
+{
+	return this->x * objective.y - this->y * objective.x;
+}
+
+double jhVector2::dot_product(jhVector2& objective)
+{
+	return this->x * objective.x + this->y * objective.y;
+}
+
