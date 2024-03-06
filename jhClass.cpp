@@ -309,3 +309,94 @@ double jhVector2::dot_product(jhVector2& objective)
 	return this->x * objective.x + this->y * objective.y;
 }
 
+template<typename T>
+void jhList<T>::addList(T value)
+{
+	node* newlist = new node;
+	newlist->p_next = NULL;
+	newlist->value = value;
+	node* p = this->p_first;
+	while (p->p_next != NULL)
+	{
+		p = p->p_next;
+	}
+	newlist->p_back = p;
+	p->p_next = newlist;
+}
+
+template<typename T>
+void jhList<T>::deleteList(node* list)
+{
+	if (list->p_back != NULL)
+	{
+		if (list->p_next != NULL)
+		{
+			node* p = list->p_back;
+			p->p_next = list->p_next;
+			node* p1 = list->p_next;
+			p1->p_back = p;
+			delete list;
+		}
+		else
+		{
+			node* p = list->p_back;
+			p->p_next = NULL;
+			delete list;
+		}
+	}
+	else
+	{
+		if (list->p_next != NULL)
+		{
+			node* p = list->p_next;
+			p->p_back = NULL;
+			p_first = p;
+			delete list;
+		}
+		else
+		{
+			delete list;
+		}
+	}
+}
+
+template<typename T>
+jhList<T>::jhList()
+{
+	p_first = new node;
+	p_first->p_next = NULL;
+	p_first->p_back = NULL;
+}
+
+template<typename T>
+jhList<T>::jhList(T initialValue)
+{
+	p_first = new node;
+	p_first->p_next = NULL;
+	p_first->p_back = NULL;
+	p_first->value = initialValue;
+}
+
+template<typename T>
+jhList<T>::~jhList()
+{
+	for (node* it = this->p_first; it != NULL; it = it->p_next)
+	{
+		if (it->p_back != NULL)
+			delete it->p_back;
+		if (it->p_next == NULL)
+		{
+			delete it;
+			break;
+		}
+	}
+}
+//Ä£°åÊµÀý»¯
+template class jhList<int>;
+template class jhList<char>;
+template class jhList<float>;
+template class jhList<double>;
+template class jhList<string>;
+template class jhList<jhString>;
+template class jhList<jhFraction>;
+template class jhList<jhVector2>;

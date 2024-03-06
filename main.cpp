@@ -54,13 +54,14 @@ void test_jhlist()
 	list1.addList(4);
 	list1.addList(111);
 	list1.addList(111);
-	list1.addList(111);
-	list1.addList(111);
+	list1.addList(113);
+	list1.addList(114);
+	//遍历链表
 	for (auto it = list1.p_first; it!= NULL; it = it->p_next)
 	{
 		if (it->value == 111)
 		{
-			list1.deleteList(it);
+			list1.deleteList(it);//删除节点
 		}
 	}
 	//遍历链表

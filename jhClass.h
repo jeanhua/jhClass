@@ -88,7 +88,8 @@ public:
 	//求向量点乘
 	double dot_product(jhVector2& objective);
 };
-//jhList:链表类
+
+//jhList:链表模板类(无序链表)
 template<typename T>
 class jhList
 {
@@ -102,78 +103,13 @@ public:
 	//链表头
 	node* p_first;
 	//在后面添加节点
-	void addList(T value)
-	{
-		node* newlist = new node;
-		newlist->p_next = NULL;
-		newlist->value = value;
-		node* p = this->p_first;
-		while (p->p_next != NULL)
-		{
-			p = p->p_next;
-		}
-		newlist->p_back = p;
-		p->p_next = newlist;
-	}
+	void addList(T value);
 	//删除节点
-	void deleteList(node* list)
-	{
-		if (list->p_back != NULL)
-		{
-			if (list->p_next != NULL)
-			{
-				node* p = list->p_back;
-				p->p_next = list->p_next;
-				node* p1 = list->p_next;
-				p1->p_back = p;
-				delete list;
-			}
-			else
-			{
-				node* p = list->p_back;
-				p->p_next = NULL;
-				delete list;
-			}
-		}
-		else
-		{
-			if (list->p_next != NULL)
-			{
-				node* p = list->p_next;
-				p->p_back = NULL;
-				p_first = p;
-				delete list;
-			}
-			else
-			{
-				delete list;
-			}
-		}
-	}
-	jhList()
-	{
-		p_first = new node;
-		p_first->p_next = NULL;
-		p_first->p_back = NULL;
-	}
-	jhList(T initialValue)
-	{
-		p_first = new node;
-		p_first->p_next = NULL;
-		p_first->p_back = NULL;
-		p_first->value = initialValue;
-	}
-	~jhList()
-	{
-		for (node* it = this->p_first; it!= NULL; it = it->p_next)
-		{
-			if(it->p_back!=NULL)
-				delete it->p_back;
-			if (it->p_next == NULL)
-			{
-				delete it;
-				break;
-			}
-		}
-	}
+	void deleteList(node* list);
+	//默认构造函数
+	jhList();
+	//有参构造函数,initialValue:链表头初始值
+	jhList(T initialValue);
+	//析构函数
+	~jhList();
 };
