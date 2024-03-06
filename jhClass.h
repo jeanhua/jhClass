@@ -167,7 +167,13 @@ public:
 	{
 		for (node* it = this->p_first; it!= NULL; it = it->p_next)
 		{
-			delete it;
+			if(it->p_back!=NULL)
+				delete it->p_back;
+			if (it->p_next == NULL)
+			{
+				delete it;
+				break;
+			}
 		}
 	}
 };
