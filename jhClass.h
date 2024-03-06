@@ -52,7 +52,9 @@ public:
 	void simplify();
 	float to_float();
 	jhFraction operator+(jhFraction& num);
+	jhFraction& operator+=(jhFraction& num);
 	jhFraction operator-(jhFraction& num);
+	jhFraction& operator-=(jhFraction& num);
 	jhFraction operator*(jhFraction& num);
 	jhFraction operator/(jhFraction& num);
 	bool operator>(jhFraction& num);
@@ -79,7 +81,11 @@ public:
 	jhVector2(float x,float y);
 	jhVector2& operator=(jhVector2& v2);
 	jhVector2 operator+(jhVector2& v2);
+	jhVector2& operator+=(jhVector2& v2);
 	jhVector2 operator-(jhVector2& v2);
+	jhVector2& operator-=(jhVector2& v2);
+	jhVector2 operator*(float i);
+	jhVector2 operator/(float i);
 	bool operator==(jhVector2 & v2);
 	//Çó×ø±ê¾àÀë
 	double destance(jhVector2& objective);

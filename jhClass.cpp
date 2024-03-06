@@ -261,8 +261,11 @@ jhFraction& jhFraction::operator+=(jhFraction& num)
 	*this = *this + num;
 	return *this;
 }
-
-
+jhFraction& jhFraction::operator-=(jhFraction& num)
+{
+	*this = *this - num;
+	return *this;
+}
 
 jhVector2::jhVector2()
 {
@@ -283,9 +286,29 @@ jhVector2 jhVector2::operator+(jhVector2& v2)
 {
 	return jhVector2(this->x + v2.x, this->y + v2.y);
 }
+jhVector2& jhVector2::operator+=(jhVector2& v2)
+{
+	this->x += v2.x;
+	this->y += v2.y;
+	return *this;
+}
 jhVector2 jhVector2::operator-(jhVector2& v2)
 {
 	return jhVector2(this->x - v2.x, this->y - v2.y);
+}
+jhVector2& jhVector2::operator-=(jhVector2& v2)
+{
+	this->x -= v2.x;
+	this->y -= v2.y;
+	return *this;
+}
+jhVector2 jhVector2::operator*(float i)
+{
+	return jhVector2(this->x * i, this->y * i);
+}
+jhVector2 jhVector2::operator/(float i)
+{
+	return jhVector2(this->x / i, this->y / i);
 }
 bool jhVector2::operator==(jhVector2& v2)
 {
