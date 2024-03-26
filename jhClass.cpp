@@ -276,27 +276,27 @@ jhVector2::jhVector2(float x, float y)
 	this->x = x;
 	this->y = y;
 }
-jhVector2& jhVector2::operator=(jhVector2& v2)
+jhVector2& jhVector2::operator=(const jhVector2& v2)
 {
 	this->x = v2.x;
 	this->y = v2.y;
 	return *this;
 }
-jhVector2 jhVector2::operator+(jhVector2& v2)
+jhVector2 jhVector2::operator+(const jhVector2& v2)
 {
 	return jhVector2(this->x + v2.x, this->y + v2.y);
 }
-jhVector2& jhVector2::operator+=(jhVector2& v2)
+jhVector2& jhVector2::operator+=(const jhVector2& v2)
 {
 	this->x += v2.x;
 	this->y += v2.y;
 	return *this;
 }
-jhVector2 jhVector2::operator-(jhVector2& v2)
+jhVector2 jhVector2::operator-(const jhVector2& v2)
 {
 	return jhVector2(this->x - v2.x, this->y - v2.y);
 }
-jhVector2& jhVector2::operator-=(jhVector2& v2)
+jhVector2& jhVector2::operator-=(const jhVector2& v2)
 {
 	this->x -= v2.x;
 	this->y -= v2.y;
@@ -310,24 +310,24 @@ jhVector2 jhVector2::operator/(float i)
 {
 	return jhVector2(this->x / i, this->y / i);
 }
-bool jhVector2::operator==(jhVector2& v2)
+bool jhVector2::operator==(const jhVector2& v2)
 {
 	if (this->x == v2.x && this->y == v2.y)
 		return true;
 	else
 		return false;
 }
-double jhVector2::destance(jhVector2& obj)
+double jhVector2::destance(const jhVector2& obj)
 {
 	return sqrt(pow(this->x - obj.x, 2) + pow(this->y - obj.y, 2));
 }
 
-double jhVector2::cross_product(jhVector2& objective)
+double jhVector2::cross_product(const jhVector2& objective)
 {
 	return this->x * objective.y - this->y * objective.x;
 }
 
-double jhVector2::dot_product(jhVector2& objective)
+double jhVector2::dot_product(const jhVector2& objective)
 {
 	return this->x * objective.x + this->y * objective.y;
 }
@@ -423,3 +423,4 @@ template class jhList<string>;
 template class jhList<jhString>;
 template class jhList<jhFraction>;
 template class jhList<jhVector2>;
+template class jhList<void*>;

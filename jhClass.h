@@ -5,10 +5,10 @@
 using namespace std;
 
 /*
-	è‡ªå®šä¹‰ç±»ï¼šjhStringç±»ï¼ŒjhFractionç±»ï¼ŒjhVector2ç±»ï¼ŒjhListç±»
+	×Ô¶¨ÒåÀà£ºjhStringÀà£¬jhFractionÀà£¬jhVector2Àà£¬jhListÀà
 */
 
-//jhStringç±»:å­—ç¬¦ä¸²ç±»å‹
+//jhStringÀà:×Ö·û´®ÀàĞÍ
 class jhString
 {
 public:
@@ -21,26 +21,26 @@ public:
 	jhString operator=(jhString str);
 	jhString operator+=(jhString str);
 	bool operator==(jhString str);
-	//å­—ç¬¦ä¸²è½¬æ¢ä¸ºæ•´å‹æ•°æ®(å¦‚æœå¯ä»¥)
+	//×Ö·û´®×ª»»ÎªÕûĞÍÊı¾İ(Èç¹û¿ÉÒÔ)
 	int to_int();
-	//å­—ç¬¦ä¸²è½¬æ¢ä¸ºæµ®ç‚¹å‹æ•°æ®(å¦‚æœå¯ä»¥)
+	//×Ö·û´®×ª»»Îª¸¡µãĞÍÊı¾İ(Èç¹û¿ÉÒÔ)
 	float to_float();
-	//è¿”å›å­—ç¬¦ä¸²ç´¢å¼•ï¼Œä»0å¼€å§‹
+	//·µ»Ø×Ö·û´®Ë÷Òı£¬´Ó0¿ªÊ¼
 	int indexOf(string str);
-	//è¿”å›å­—ç¬¦ä¸²ç´¢å¼•ï¼Œä»0å¼€å§‹
+	//·µ»Ø×Ö·û´®Ë÷Òı£¬´Ó0¿ªÊ¼
 	int indexOf(jhString str);
-	//è½¬æ¢ä¸ºstd::string
+	//×ª»»Îªstd::string
 	string to_stdString();
-	//å­—ç¬¦ä¸²æˆªå–ï¼Œä»èµ·å§‹ä½ç½®æˆªå–åˆ°ç»ˆç‚¹ä½ç½®ï¼Œä»0å¼€å§‹
+	//×Ö·û´®½ØÈ¡£¬´ÓÆğÊ¼Î»ÖÃ½ØÈ¡µ½ÖÕµãÎ»ÖÃ£¬´Ó0¿ªÊ¼
 	string substr(int begin, int end);
-	//å­—ç¬¦ä¸²æˆªå–,ä»å·¦è¾¹å­—ç¬¦æˆªå–åˆ°å³è¾¹å­—ç¬¦(ä¸åŒ…å«è¾¹ç•Œ)ï¼Œè‹¥æ‰¾ä¸åˆ°å·¦è¾¹ï¼Œè¿”å›ç©ºï¼›è‹¥æ‰¾åˆ°å·¦è¾¹ï¼Œä½†æ‰¾ä¸åˆ°å³è¾¹ï¼Œè¿”å›å·¦è¾¹åˆ°æœ«å°¾
+	//×Ö·û´®½ØÈ¡,´Ó×ó±ß×Ö·û½ØÈ¡µ½ÓÒ±ß×Ö·û(²»°üº¬±ß½ç)£¬ÈôÕÒ²»µ½×ó±ß£¬·µ»Ø¿Õ£»ÈôÕÒµ½×ó±ß£¬µ«ÕÒ²»µ½ÓÒ±ß£¬·µ»Ø×ó±ßµ½Ä©Î²
 	string substr(string leftStr, string rightStr);
 
 private:
 	string str;
 };
 
-//jhFractionç±»:s/måˆ†æ•°ç±»
+//jhFractionÀà:s/m·ÖÊıÀà
 class jhFraction
 {
 public:
@@ -68,33 +68,33 @@ public:
 	bool operator==(jhFraction& num);
 	bool operator==(float num);
 private:
-	int s, m;/* ï¼ˆs/måˆ†æ•°ç±»å‹ï¼‰*/
+	int s, m;/* £¨s/m·ÖÊıÀàĞÍ£©*/
 };
 
-//jhVector2ç±»ï¼šäºŒç»´å‘é‡ï¼Œåæ ‡
+//jhVector2Àà£º¶şÎ¬ÏòÁ¿£¬×ø±ê
 class jhVector2
 {
 public:
 	float x, y;
 	jhVector2();
 	jhVector2(float x,float y);
-	jhVector2& operator=(jhVector2& v2);
-	jhVector2 operator+(jhVector2& v2);
-	jhVector2& operator+=(jhVector2& v2);
-	jhVector2 operator-(jhVector2& v2);
-	jhVector2& operator-=(jhVector2& v2);
+	jhVector2& operator=(const jhVector2& v2);
+	jhVector2 operator+(const jhVector2& v2);
+	jhVector2& operator+=(const jhVector2& v2);
+	jhVector2 operator-(const jhVector2& v2);
+	jhVector2& operator-=(const jhVector2& v2);
 	jhVector2 operator*(float i);
 	jhVector2 operator/(float i);
-	bool operator==(jhVector2 & v2);
-	//æ±‚åæ ‡è·ç¦»
-	double destance(jhVector2& objective);
-	//æ±‚å‘é‡å‰ä¹˜
-	double cross_product(jhVector2& objective);
-	//æ±‚å‘é‡ç‚¹ä¹˜
-	double dot_product(jhVector2& objective);
+	bool operator==(const jhVector2 & v2);
+	//Çó×ø±ê¾àÀë
+	double destance(const jhVector2& objective);
+	//ÇóÏòÁ¿²æ³Ë
+	double cross_product(const jhVector2& objective);
+	//ÇóÏòÁ¿µã³Ë
+	double dot_product(const jhVector2& objective);
 };
 
-//jhList:é“¾è¡¨æ¨¡æ¿ç±»(æ— åºé“¾è¡¨)
+//jhList:Á´±íÄ£°åÀà(ÎŞĞòÁ´±í)
 template<typename T>
 class jhList
 {
@@ -105,16 +105,16 @@ public:
 		node* p_next;
 		T value;
 	};
-	//é“¾è¡¨å¤´
+	//Á´±íÍ·
 	node* p_first;
-	//åœ¨åé¢æ·»åŠ èŠ‚ç‚¹
+	//ÔÚºóÃæÌí¼Ó½Úµã
 	void addList(T value);
-	//åˆ é™¤èŠ‚ç‚¹
+	//É¾³ı½Úµã
 	void deleteList(node* list);
-	//é»˜è®¤æ„é€ å‡½æ•°
+	//Ä¬ÈÏ¹¹Ôìº¯Êı
 	jhList();
-	//æœ‰å‚æ„é€ å‡½æ•°,initialValue:é“¾è¡¨å¤´åˆå§‹å€¼
+	//ÓĞ²Î¹¹Ôìº¯Êı,initialValue:Á´±íÍ·³õÊ¼Öµ
 	jhList(T initialValue);
-	//ææ„å‡½æ•°
+	//Îö¹¹º¯Êı
 	~jhList();
 };

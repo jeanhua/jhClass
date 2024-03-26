@@ -36,18 +36,18 @@ void test_jhfraction()
 void test_jhvector2()
 {
 	cout << "jhvector2 test-------------------------------------------\n";
-	jhVector2 v1(1,1), v2(2,3);
+	jhVector2 v1(1,1);
 	//求坐标v1和v2的距离
-	float a = v1.destance(v2);
+	float a = v1.destance(jhVector2(2,3));
 	cout << a << endl;
-	jhVector2 v3 = v1 + v2;
+	jhVector2 v3 = v1 +jhVector2(2,3);
 	cout << "v3=("<<v3.x<<","<<v3.y<<")" << endl;
 }
 void test_jhlist()
 {
 	cout << "jhlist test-------------------------------------------\n";
 	//创建整型链表
-	jhList<int> list1(0);
+	jhList<int> list1;
 	list1.addList(1);
 	list1.addList(2);
 	list1.addList(3);
@@ -59,7 +59,7 @@ void test_jhlist()
 	//遍历链表
 	for (auto it = list1.p_first; it!= NULL; it = it->p_next)
 	{
-		if (it->value == 111)
+		if (it->value == 0)
 		{
 			list1.deleteList(it);//删除节点
 		}
@@ -70,13 +70,8 @@ void test_jhlist()
 		cout << it->value << endl;
 	}
 }
+
 int main()
 {
-	test_jhstring();
-	cout << "\n";
-	test_jhfraction();
-	cout << "\n";
-	test_jhvector2();
-	cout << '\n';
 	test_jhlist();
 }
