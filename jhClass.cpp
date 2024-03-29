@@ -1,11 +1,11 @@
 #include "jhClass.h"
 
-ostream& operator<<(ostream& cout, jhString& str)
+ostream& operator<<(ostream& cout,const jhString& str)
 {
 	cout << str.str;
 	return cout;
 }
-istream& operator>>(istream& cin, jhString& str)
+istream& operator>>(istream& cin,const jhString& str)
 {
 	cin >> str.str;
 	return cin;
@@ -14,7 +14,7 @@ jhString::jhString()
 {
 	this->str = "";
 }
-jhString::jhString(string str)
+jhString::jhString(const string& str)
 {
 	this->str = str;
 }
@@ -22,21 +22,21 @@ jhString::jhString(const char* str)
 {
 	this->str = string(str);
 }
-jhString jhString::operator+(jhString str)
+jhString jhString::operator+(const jhString& str)
 {
 	return jhString(this->str + str.str);
 }
-jhString jhString::operator=(jhString str)
+jhString jhString::operator=(const jhString& str)
 {
 	this->str = str.str;
 	return *this;
 }
-jhString jhString::operator+=(jhString str)
+jhString jhString::operator+=(const jhString& str)
 {
 	this->str += str.str;
 	return *this;
 }
-bool jhString::operator==(jhString str)
+bool jhString::operator==(const jhString& str)
 {
 	if (this->str == str.str)
 	{
@@ -52,11 +52,11 @@ float jhString::to_float()
 {
 	return atof(this->str.c_str());
 }
-int jhString::indexOf(string str)
+int jhString::indexOf(const string& str)
 {
 	return this->str.find(str);
 }
-int jhString::indexOf(jhString str)
+int jhString::indexOf(const jhString& str)
 {
 	return this->str.find(str.str);
 }
@@ -71,7 +71,7 @@ string jhString::substr(int begin, int end)
 	else
 		return this->str;
 }
-string jhString::substr(string leftStr, string rightStr)//取出中间字符串
+string jhString::substr(const string& leftStr,const string& rightStr)//取出中间字符串
 {
 	int left = this->str.find(leftStr);
 	int right;
@@ -166,23 +166,23 @@ float jhFraction::to_float()
 	return float(s) / m;
 }
 
-jhFraction jhFraction::operator+(jhFraction& num)
+jhFraction jhFraction::operator+(const jhFraction& num)
 {
 	return jhFraction(this->s * num.m + this->m * num.s, this->m * num.m);
 }
-jhFraction jhFraction::operator-(jhFraction& num)
+jhFraction jhFraction::operator-(const jhFraction& num)
 {
 	return jhFraction(this->s * num.m - this->m * num.s, this->m * num.m);
 }
-jhFraction jhFraction::operator*(jhFraction& num)
+jhFraction jhFraction::operator*(const jhFraction& num)
 {
 	return jhFraction(this->s * num.s, this->m * num.m);
 }
-jhFraction jhFraction::operator/(jhFraction& num)
+jhFraction jhFraction::operator/(const jhFraction& num)
 {
 	return jhFraction(this->s * num.m, this->m * num.s);
 }
-bool jhFraction::operator>(jhFraction& num)
+bool jhFraction::operator>(const jhFraction& num)
 {
 	if (this->s * num.m - num.s - this->m > 0)
 		return true;
@@ -196,7 +196,7 @@ bool jhFraction::operator>(float num)
 	else
 		return false;
 }
-bool jhFraction::operator>=(jhFraction& num)
+bool jhFraction::operator>=(const jhFraction& num)
 {
 	if (*this > num || *this == num)
 	{
@@ -212,7 +212,7 @@ bool jhFraction::operator>=(float num)
 	else
 		return false;
 }
-bool jhFraction::operator<=(jhFraction& num)
+bool jhFraction::operator<=(const jhFraction& num)
 {
 	if (*this < num || *this == num)
 	{
@@ -228,7 +228,7 @@ bool jhFraction::operator<=(float num)
 	else
 		return false;
 }
-bool jhFraction::operator<(jhFraction& num)
+bool jhFraction::operator<(const jhFraction& num)
 {
 	if (this->s * num.m - num.s - this->m > 0)
 		return false;
@@ -242,7 +242,7 @@ bool jhFraction::operator<(float num)
 	else
 		return false;
 }
-bool jhFraction::operator==(jhFraction& num)
+bool jhFraction::operator==(const jhFraction& num)
 {
 	if (this->s * num.m - num.s - this->m == 0)
 		return true;
@@ -256,12 +256,12 @@ bool jhFraction::operator==(float num)
 	else
 		return false;
 }
-jhFraction& jhFraction::operator+=(jhFraction& num)
+jhFraction& jhFraction::operator+=(const jhFraction& num)
 {
 	*this = *this + num;
 	return *this;
 }
-jhFraction& jhFraction::operator-=(jhFraction& num)
+jhFraction& jhFraction::operator-=(const jhFraction& num)
 {
 	*this = *this - num;
 	return *this;
