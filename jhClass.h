@@ -5,7 +5,7 @@
 using namespace std;
 
 /*
-	自定义类：jhString类，jhFraction类，jhVector2类，jhList类
+	自定义类：jhString类，jhFraction类，jhVector2类，jhList类，jhMatrix类
 */
 
 //jhString类:字符串类型
@@ -44,12 +44,14 @@ private:
 class jhFraction
 {
 public:
-	friend ostream& operator<<(ostream& cout, jhFraction& num);
-	friend istream& operator>>(istream& cin, jhFraction& num);
+	friend ostream& operator<<(ostream& cout,const jhFraction& num);
+	friend istream& operator>>(istream& cin,jhFraction& num);
 	jhFraction();
-	jhFraction(int sm);
+	jhFraction(int num);
+	jhFraction(double num);
 	jhFraction(int s,int m);
 	void simplify();
+	void print();
 	float to_float();
 	jhFraction operator+(const jhFraction& num);
 	jhFraction& operator+=(const jhFraction& num);
@@ -101,8 +103,8 @@ class jhList
 public:
 	struct node
 	{
-		node* p_back;
-		node* p_next;
+		node* p_back=NULL;
+		node* p_next=NULL;
 		T value;
 	};
 	//链表头
@@ -117,4 +119,58 @@ public:
 	jhList(T initialValue);
 	//析构函数
 	~jhList();
+};
+
+//jhMatrix类，矩阵类
+class jhMatrix
+{
+private:
+
+	float** matrix;
+	int row, column;
+	void init(int row,int column)
+	{
+		this->row = row;
+		this->column = column;
+		this->matrix = new float* [row];
+		for (int i = 0; i < this->row; i++)
+		{
+			this->matrix[i] = new float[this->column];
+		}
+	}
+public:
+
+	// 默认构造函数
+	jhMatrix(int row, int column);
+	//用另一个矩阵构造
+	jhMatrix(const jhMatrix& other);
+	// jhVector2构造函数
+	jhMatrix(const jhVector2& v2);
+	// 二维数组转换的一维指针构造
+	jhMatrix(float* other, int row, int column);
+	// 析构函数
+	~jhMatrix();
+	// 设置矩阵值
+	void setValue(int row, int column, float value);
+	//打印矩阵
+	void print(bool isFraction=false);
+	// 取转置矩阵
+	jhMatrix getTransposeMatrix();
+	// 取逆矩阵
+	jhMatrix getInverseMatrix();
+	//取行列式
+	float getDeterminant();
+	// 交换行
+	void swapRows(int row1, int row2);
+	// 将某行所有元素除以一个数
+	void divideRow(int row, float divisor);
+	// 将一行加到另一行的倍数
+	void addToRow(int sourceRow, int destRow, float multiple);
+	// 矩阵运算
+	jhMatrix operator+(const jhMatrix& other);
+	jhMatrix operator-(const jhMatrix& other);
+	jhMatrix operator*(const jhMatrix& other);
+	jhMatrix operator*(float num);
+	jhMatrix operator=(const jhMatrix& other);
+	bool operator==(const jhMatrix& other);
 };

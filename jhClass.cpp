@@ -1,4 +1,7 @@
 #include "jhClass.h"
+#include<stdexcept>
+#include<vector>
+#include<cmath>
 
 ostream& operator<<(ostream& cout,const jhString& str)
 {
@@ -94,7 +97,7 @@ string jhString::substr(const string& leftStr,const string& rightStr)//»°≥ˆ÷–º‰◊
 }
 
 
-ostream& operator<<(ostream& cout, jhFraction& num)
+ostream& operator<<(ostream& cout,const jhFraction& num)
 {
 	if (num.m != 1 && num.s != 0)
 		cout << num.s << "/" << num.m;
@@ -102,7 +105,7 @@ ostream& operator<<(ostream& cout, jhFraction& num)
 		cout << num.s;
 	return cout;
 }
-istream& operator>>(istream& cin, jhFraction& num)
+istream& operator>>(istream& cin,jhFraction& num)
 {
 	int s, m;
 	scanf("%d/%d", &s, &m);
@@ -123,6 +126,7 @@ void jhFraction::simplify()
 			if (s % i == 0 && m % i == 0)
 			{
 				s /= i; m /= i;
+				i = 1;
 			}
 		}
 	}
@@ -134,10 +138,15 @@ void jhFraction::simplify()
 			if (s % i == 0 && m % i == 0)
 			{
 				s /= i; m /= i;
+				i = 1;
 			}
 		}
 		s = -s;
 	}
+}
+void jhFraction::print()
+{
+	cout << s << "/" << m;
 }
 jhFraction::jhFraction()
 {
@@ -147,6 +156,17 @@ jhFraction::jhFraction(int sm)
 {
 	s = sm;
 	m = 1;
+}
+jhFraction::jhFraction(double num)
+{
+	int M=1;
+	while (num-int(num)!=0)
+	{
+		num *= 10;
+		M *= 10;
+	}
+	s = num; m = M;
+	simplify();
 }
 jhFraction::jhFraction(int s, int m)
 {
@@ -424,3 +444,320 @@ template class jhList<jhString>;
 template class jhList<jhFraction>;
 template class jhList<jhVector2>;
 template class jhList<void*>;
+
+
+
+jhMatrix::jhMatrix(int row, int column)
+{
+	this->init(row, column);
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < column; j++)
+		{
+			matrix[i][j] = 0;
+		}
+	}
+}
+
+jhMatrix::jhMatrix(const jhMatrix& other)
+{
+	this->row = other.row;
+	this->column = other.column;
+	this->row = other.row;
+	this->column = other.column;
+	for (int i = 0; i < this->row; i++)
+	{
+		for (int j = 0; j < this->column; j++)
+		{
+			this->matrix[i][j] = other.matrix[i][j];
+		}
+	}
+}
+
+jhMatrix::~jhMatrix()
+{
+	for (int i = 0; i < this->row; i++)delete[] this->matrix[i];
+	delete[] this->matrix;
+}
+
+jhMatrix::jhMatrix(const jhVector2& v2)
+{
+	this->init(int(v2.x), int(v2.y));
+}
+
+jhMatrix::jhMatrix(float* other, int row, int column)
+{
+	this->init(row, column);
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < column; j++)
+		{
+			this->matrix[i][j] = *(other+i*column+j);
+		}
+	}
+}
+
+void jhMatrix::setValue(int row, int column, float value)
+{
+	this->matrix[row][column] = value;
+}
+
+void jhMatrix::print(bool isFraction)
+{
+	if(isFraction==false)
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < column; j++)
+			{
+				cout << matrix[i][j] << " ";
+			}
+			cout << endl;
+		}
+	else
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < column; j++)
+			{
+				cout << jhFraction(matrix[i][j]) << " ";
+			}
+			cout << endl;
+		}
+}
+
+void jhMatrix::swapRows(int row1, int row2) {
+	if (row1 < 0 || row1 >= row || row2 < 0 || row2 >= row) {
+		throw std::out_of_range("Row index out of range");
+	}
+	float* temp = matrix[row1];
+	matrix[row1] = matrix[row2];
+	matrix[row2] = temp;
+}
+
+void jhMatrix::divideRow(int row, float divisor) {
+	if (row < 0 || row >= this->row) {
+		throw std::out_of_range("Row index out of range");
+	}
+	else if (divisor == 0)
+	{
+		throw std::invalid_argument("Can't be divided by 0");
+	}
+	for (int j = 0; j < column; ++j) {
+		matrix[row][j] /= divisor;
+	}
+}
+
+void jhMatrix::addToRow(int sourceRow, int destRow, float multiple) {
+	if (sourceRow < 0 || sourceRow >= row || destRow < 0 || destRow >= row) {
+		throw std::out_of_range("Row index out of range");
+	}
+	for (int j = 0; j < column; ++j) {
+		matrix[destRow][j] += matrix[sourceRow][j] * multiple;
+	}
+}
+
+
+jhMatrix jhMatrix::getTransposeMatrix()
+{
+	jhMatrix transpose(column, row); // –¬Ω®“ª∏ˆæÿ’Û£¨––¡–ª•ªª
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < column; ++j) 
+		{
+			transpose.matrix[j][i] = matrix[i][j]; // ◊™÷√
+		}
+	}
+	return transpose;
+}
+float calDeterminant(float** det, int n)//det-––¡– Ω£¨n:––¡– ΩµƒΩ◊ ˝
+{
+	float detVal = 0;//––¡– Ωµƒ÷µ
+	if (n == 1)//µ›πÈ÷’÷πÃıº˛ 
+		return det[0][0];
+	float** tempdet = new float* [n - 1];//”√¿¥¥Ê¥¢”‡œ‡”¶µƒ”‡◊” Ω
+	for (int i = 0; i < n - 1; i++)
+		tempdet[i] = new float[n - 1];
+	for (int i = 0; i < n; i++)//µ⁄“ª÷ÿ—≠ª∑£¨––¡– Ω∞¥µ⁄“ª––’πø™ 
+	{
+		for (int j = 0; j < n - 1; j++)
+			for (int k = 0; k < n - 1; k++)
+			{
+				if (k < i)
+					tempdet[j][k] = det[j + 1][k];
+				else
+					tempdet[j][k] = det[j + 1][k + 1];
+			}
+		detVal += det[0][i] * pow(-1.0, i) * calDeterminant(tempdet, n - 1);
+	}
+	for (int i = 0; i < n - 1; i++)delete[] tempdet[i]; delete[] tempdet;
+	return detVal;
+}
+
+// π”√∏ﬂÀπœ˚‘™∑®∂‘æÿ’ÛΩ¯––«ÛƒÊ
+jhMatrix jhMatrix::getInverseMatrix() {
+	if (row != column) {
+		throw std::invalid_argument("Matrix is not square.");
+	}
+	// ¥¥Ω®¿©‘ˆæÿ’Û
+	double** augmentedMatrix = new double* [row];
+	for (int i = 0; i < row; ++i) {
+		augmentedMatrix[i] = new double[2 * row];
+		for (int j = 0; j < row; ++j) {
+			augmentedMatrix[i][j] = matrix[i][j];
+			augmentedMatrix[i][j + row] = (i == j) ? 1 : 0; // ∂‘Ω«œﬂ÷√Œ™1£¨∆‰”‡÷√Œ™0
+		}
+	}
+	// ∏ﬂÀπœ˚‘™
+	for (int i = 0; i < row; ++i) {
+		// ≈–∂œ÷˜‘™Àÿ «∑ÒŒ™0£¨»Áπ˚ «‘ÚΩªªª––
+		if (augmentedMatrix[i][i] == 0) {
+			int swapRow = i + 1;
+			while (swapRow < row && augmentedMatrix[swapRow][i] == 0) {
+				++swapRow;
+			}
+			if (swapRow == row) {
+				throw std::invalid_argument("Matrix is singular.");
+			}
+			std::swap(augmentedMatrix[i], augmentedMatrix[swapRow]);
+		}
+		// Ω´÷˜‘™ÀÿπÈ“ª
+		double pivot = augmentedMatrix[i][i];
+		for (int j = 0; j < 2 * row; ++j) {
+			augmentedMatrix[i][j] /= pivot;
+		}
+		//  π”√÷˜‘™Àÿœ˚»•∆‰À˚––
+		for (int j = 0; j < row; ++j) {
+			if (j != i) {
+				double factor = augmentedMatrix[j][i];
+				for (int k = 0; k < 2 * row; ++k) {
+					augmentedMatrix[j][k] -= factor * augmentedMatrix[i][k];
+				}
+			}
+		}
+	}
+	// Ã·»°ƒÊæÿ’Û
+	jhMatrix inverse(row, column);
+	for (int i = 0; i < row; ++i) {
+		for (int j = 0; j < row; ++j) {
+			inverse.matrix[i][j] = augmentedMatrix[i][j + row];
+		}
+	}
+	//  Õ∑≈ƒ⁄¥Ê
+	for (int i = 0; i < row; ++i) {
+		delete[] augmentedMatrix[i];
+	}
+	delete[] augmentedMatrix;
+	return inverse;
+}
+
+
+float jhMatrix::getDeterminant()
+{
+	if (row != column) {
+		throw std::invalid_argument("Cannot calculate determinant for non-square matrix");
+	}
+	if (row == 1) {
+		return matrix[0][0];
+	}
+	else 
+	{
+		return calDeterminant(this->matrix, row);
+	}
+}
+
+// æÿ’Ûº”∑®
+jhMatrix jhMatrix::operator+(const jhMatrix& other) {
+	if (row != other.row || column != other.column) {
+		throw std::invalid_argument("Matrix dimensions do not match for addition");
+	}
+	jhMatrix result(row, column);
+	for (int i = 0; i < row; ++i) 
+	{
+		for (int j = 0; j < column; ++j) 
+		{
+			result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+		}
+	}
+	return result;
+}
+
+// æÿ’Ûºı∑®
+jhMatrix jhMatrix::operator-(const jhMatrix& other)
+{
+	if (row != other.row || column != other.column) 
+	{
+		throw std::invalid_argument("Matrix dimensions do not match for subtraction");
+	}
+	jhMatrix result(row, column);
+
+	for (int i = 0; i < row; ++i)
+	{
+		for (int j = 0; j < column; ++j)
+		{
+			result.matrix[i][j] = matrix[i][j] - other.matrix[i][j];
+		}
+	}
+	return result;
+}
+
+// æÿ’Û≥À∑®
+jhMatrix jhMatrix::operator*(const jhMatrix& other) 
+{
+	if (column != other.row) 
+	{
+		throw std::invalid_argument("Matrix dimensions do not match for multiplication");
+	}
+	jhMatrix result(this->row, other.column);
+	for (int i = 0; i < row; ++i) 
+	{
+		for (int j = 0; j < other.column; ++j) 
+		{
+			result.matrix[i][j] = 0;
+			for (int k = 0; k <this->column; ++k) 
+			{
+				result.matrix[i][j] += matrix[i][k] * other.matrix[k][j];
+			}
+		}
+	}
+	return result;
+}
+
+// æÿ’Û”Î±Í¡ø≥À∑®
+jhMatrix jhMatrix::operator*(float num)
+{
+	jhMatrix result(row, column);
+	for (int i = 0; i < row; ++i) 
+	{
+		for (int j = 0; j < column; ++j) 
+		{
+			result.matrix[i][j] = matrix[i][j] * num;
+		}
+	}
+	return result;
+}
+
+jhMatrix jhMatrix::operator=(const jhMatrix& other)
+{
+	this->row = other.row;
+	this->column = other.column;
+	for (int i = 0; i < this->row; i++)
+	{
+		for (int j = 0; j < this->column; j++)
+		{
+			this->matrix[i][j] = other.matrix[i][j];
+		}
+	}
+}
+
+bool jhMatrix::operator==(const jhMatrix& other)
+{
+	if (this->row != other.row || this->column != other.column)return false;
+	for (int i = 0; i < this->row; i++)
+	{
+		for (int j = 0; j < this->column; j++)
+		{
+			if (this->matrix[i][j] != other.matrix[i][j])
+				return false;
+		}
+	}
+	return true;
+}

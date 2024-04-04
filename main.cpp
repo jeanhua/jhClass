@@ -70,8 +70,37 @@ void test_jhlist()
 		cout << it->value << endl;
 	}
 }
+void test_jhmatrix()
+{
+	float a[3][3] = {
+		{1,2,-1},
+		{-2,1,0},
+		{1,0,3}
+	};
+	float b[3][2] = {
+		{2,3},
+		{1,1},
+		{1,-1}
+	};
+	try {
+		jhMatrix A((float*)a, 3, 3);
+		jhMatrix B((float*)b, 3, 2);
+		A.print();
+		cout << A.getDeterminant() << endl;
+		jhMatrix in = A.getInverseMatrix();
+		in.print(true);
+		jhMatrix tran = A.getTransposeMatrix();
+		tran.print();
+		jhMatrix mul = A * B;
+		mul.print();
+	}
+	catch(const exception& e)
+	{
+		cout << e.what();
+	}
+}
 
 int main()
 {
-	test_jhlist();
+	test_jhmatrix();
 }
