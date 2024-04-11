@@ -5,8 +5,17 @@
 using namespace std;
 
 /*
-	自定义类：jhString类，jhFraction类，jhVector2类，jhList类，jhMatrix类
+	自定义类：jhString类，jhFraction类，jhVector2类，jhList类，jhMatrix类，jhObject2D命名空间{transform类,circle类,rectangle类,triangle类,diamond类,trapezium类}
 */
+
+#define PI 3.14
+
+// 类的声明
+class jhstring;
+class jhFraction;
+class jhVector2;
+template<typename T> class jhList;
+class jhMatrix;
 
 //jhString类:字符串类型
 class jhString
@@ -94,6 +103,8 @@ public:
 	double cross_product(const jhVector2& objective);
 	//求向量点乘
 	double dot_product(const jhVector2& objective);
+	//旋转
+	void rotate(const jhVector2& center, float angle);
 };
 
 //jhList:链表模板类(无序链表)
@@ -115,8 +126,6 @@ public:
 	void deleteList(node* list);
 	//默认构造函数
 	jhList();
-	//有参构造函数,initialValue:链表头初始值
-	jhList(T initialValue);
 	//析构函数
 	~jhList();
 };
@@ -173,4 +182,79 @@ public:
 	jhMatrix operator*(float num);
 	jhMatrix operator=(const jhMatrix& other);
 	bool operator==(const jhMatrix& other);
+};
+
+namespace jhObject2D
+{
+	// 声明类
+	class transform;
+	class circle;
+	class rectangle;
+	class triangle;
+	class diamond;
+	class trapezium;
+
+	//类的实现
+
+	// 物体基类
+	class transform
+	{
+	public:
+		// 默认构造函数
+		transform();
+		// 位置(图形中心坐标，即外接圆中心坐标)
+		jhVector2 position;
+		// 旋转角度(图形绕中心点逆时针旋转的角度,弧度制)
+		float rotate;
+		// 计算面积
+		virtual float getAreaSize() = 0;
+		// 计算距离
+		float getDistance(const transform& other);
+	};
+
+	// 圆形
+	class circle :public transform
+	{
+	public:
+		circle(float radius);
+		float radius;
+		virtual float getAreaSize();
+	};
+
+	// 矩形
+	class rectangle :public transform
+	{
+	public:
+		rectangle(float width, float height);
+		float width;
+		float height;
+		virtual float getAreaSize();
+	};
+
+	// 三角形
+	class triangle :public transform
+	{
+	public:
+		triangle(float sizeA, float sizeB, float sizeC);
+		float sizeA, sizeB, sizeC;
+		virtual float getAreaSize();
+	};
+
+	// 菱形
+	class diamond :public transform
+	{
+	public:
+		diamond(float lengthX, float lengthY);
+		float lengthX, lengthY;
+		virtual float getAreaSize();
+	};
+
+	// 梯形
+	class trapezium :public transform
+	{
+	public:
+		trapezium(float lengthAbove, float lengehBelow, float height, float interval_upMinusDown);
+		float lengthAbove, lengehBelow, height, interval_upMinusDown;
+		virtual float getAreaSize();
+	};
 };

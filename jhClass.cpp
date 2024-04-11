@@ -1,6 +1,5 @@
 #include "jhClass.h"
 #include<stdexcept>
-#include<vector>
 #include<cmath>
 
 ostream& operator<<(ostream& cout,const jhString& str)
@@ -352,19 +351,35 @@ double jhVector2::dot_product(const jhVector2& objective)
 	return this->x * objective.x + this->y * objective.y;
 }
 
+void jhVector2::rotate(const jhVector2& center, float angle)
+{
+	float s = sin(angle);
+	float c = cos(angle);
+	this->x = (x - center.x) * c - (y - center.y) * s + center.x;
+	this->y = (x - center.x) * s + (y - center.y) * c + center.y;
+}
+
 template<typename T>
 void jhList<T>::addList(T value)
 {
 	node* newlist = new node;
 	newlist->p_next = NULL;
 	newlist->value = value;
-	node* p = this->p_first;
-	while (p->p_next != NULL)
+	if (this->p_first == NULL)
 	{
-		p = p->p_next;
+		this->p_first = newlist;
+		newlist->p_back = NULL;
 	}
-	newlist->p_back = p;
-	p->p_next = newlist;
+	else
+	{
+		node* p = this->p_first;
+		while (p->p_next != NULL)
+		{
+			p = p->p_next;
+		}
+		newlist->p_back = p;
+		p->p_next = newlist;
+	}
 }
 
 template<typename T>
@@ -406,32 +421,19 @@ void jhList<T>::deleteList(node* list)
 template<typename T>
 jhList<T>::jhList()
 {
-	p_first = new node;
-	p_first->p_next = NULL;
-	p_first->p_back = NULL;
-}
-
-template<typename T>
-jhList<T>::jhList(T initialValue)
-{
-	p_first = new node;
-	p_first->p_next = NULL;
-	p_first->p_back = NULL;
-	p_first->value = initialValue;
+	p_first = NULL;
+	node_num = 0;
 }
 
 template<typename T>
 jhList<T>::~jhList()
 {
-	for (node* it = this->p_first; it != NULL; it = it->p_next)
+	node* now = this->p_first;
+	while (now!=NULL)
 	{
-		if (it->p_back != NULL)
-			delete it->p_back;
-		if (it->p_next == NULL)
-		{
-			delete it;
-			break;
-		}
+		node* tmp = now;
+		now = now->p_next;
+		delete tmp;
 	}
 }
 //Ä£°åÊµÀý»¯
@@ -760,4 +762,73 @@ bool jhMatrix::operator==(const jhMatrix& other)
 		}
 	}
 	return true;
+}
+
+jhObject2D::transform::transform()
+{
+	position = jhVector2(0, 0);
+	rotate = 0;
+}
+
+float jhObject2D::transform::getDistance(const transform& other)
+{
+	return this->position.destance(other.position);
+}
+
+jhObject2D::circle::circle(float radius):transform()
+{
+	this->radius = radius;
+}
+
+float jhObject2D::circle::getAreaSize()
+{
+	return PI * this->radius * this->radius;
+}
+
+float jhObject2D::rectangle::getAreaSize()
+{
+	return this->height * this->width;
+}
+
+jhObject2D::rectangle::rectangle(float width, float height):transform()
+{
+	this->width = width;
+	this->height = height;
+}
+
+float jhObject2D::triangle::getAreaSize()
+{
+	float p = (this->sizeA + this->sizeB + this->sizeC) / 2;
+	return sqrt(p * (p - this->sizeA) * (p - this->sizeB) * (p - this->sizeC));
+}
+
+jhObject2D::triangle::triangle(float sizeA, float sizeB, float sizeC):transform()
+{
+	this->sizeA = sizeA;
+	this->sizeB = sizeB;
+	this->sizeC = sizeC;
+}
+
+float jhObject2D::diamond::getAreaSize()
+{
+	return this->lengthX * this->lengthY / 2;
+}
+
+jhObject2D::diamond::diamond(float lengthX, float lengthY) : transform()
+{
+	this->lengthX = lengthX;
+	this->lengthY = lengthY;
+}
+
+float jhObject2D::trapezium::getAreaSize()
+{
+	return (this->lengehBelow + this->lengthAbove) * this->height / 2;
+}
+
+jhObject2D::trapezium::trapezium(float lengthAbove, float lengehBelow, float height, float interval_upMinusDown) :transform()
+{
+	this->lengthAbove = lengthAbove;
+	this->lengehBelow = lengehBelow;
+	this->height = height;
+	this->interval_upMinusDown = interval_upMinusDown;
 }
