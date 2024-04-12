@@ -767,7 +767,6 @@ bool jhMatrix::operator==(const jhMatrix& other)
 jhObject2D::transform::transform()
 {
 	position = jhVector2(0, 0);
-	rotate = 0;
 }
 
 float jhObject2D::transform::getDistance(const transform& other)
@@ -785,9 +784,133 @@ float jhObject2D::circle::getAreaSize()
 	return PI * this->radius * this->radius;
 }
 
+bool jhObject2D::circle::isTrigleEnter(const triangle& other)
+{
+	//圆形与三角形的碰撞检测
+	float a = this->position.destance(other.pointA)-radius;
+	float b = this->position.destance(other.pointB)-radius;
+	float c = this->position.destance(other.pointC)-radius;
+	float p = (a + b + c) / 2;
+	float s = sqrt(p * (p - a) * (p - b) * (p - c));
+	if (s == 0)
+		return true;
+	else
+		return false;
+}
+
+bool jhObject2D::circle::isTrigleEnter(const rectangle& other)
+{
+	//圆形与矩形的碰撞检测
+	float x = this->position.x;
+	float y = this->position.y;
+	float x1 = other.position.x - other.width / 2;
+	float x2 = other.position.x + other.width / 2;
+	float y1 = other.position.y - other.height / 2;
+	float y2 = other.position.y + other.height / 2;
+	if (x+radius >= x1 && x-radius <= x2 && y+radius >= y1 && y-radius <= y2)
+		return true;
+	else
+		return false;
+}
+
+bool jhObject2D::circle::isTrigleEnter(const diamond& other)
+{
+	//圆形与菱形粗略的碰撞检测
+	float x = this->position.x;
+	float y = this->position.y;
+	float x1 = other.position.x - other.lengthX / 2;
+	float x2 = other.position.x + other.lengthX / 2;
+	float y1 = other.position.y - other.lengthY / 2;
+	float y2 = other.position.y + other.lengthY / 2;
+	if (x+radius >= x1 && x-radius <= x2 && y+radius >= y1 && y-radius <= y2)
+		return true;
+	else
+		return false;
+}
+
+bool jhObject2D::circle::isTrigleEnter(const circle& other)
+{
+	//圆形与圆形的碰撞检测
+	if (this->position.destance(other.position) <= this->radius + other.radius)
+		return true;
+	else
+		return false;
+}
+
+
 float jhObject2D::rectangle::getAreaSize()
 {
 	return this->height * this->width;
+}
+
+bool jhObject2D::rectangle::isTrigleEnter(const triangle& other)
+{
+	//矩形与三角形的碰撞检测
+	float x1 = this->position.x - this->width / 2;
+	float x2 = this->position.x + this->width / 2;
+	float y1 = this->position.y - this->height / 2;
+	float y2 = this->position.y + this->height / 2;
+	if (other.pointA.x >= x1 && other.pointA.x <= x2 && other.pointA.y >= y1 && other.pointA.y <= y2)
+		return true;
+	else
+		if (other.pointB.x >= x1 && other.pointB.x <= x2 && other.pointB.y >= y1 && other.pointB.y <= y2)
+			return true;
+		else
+			if (other.pointC.x >= x1 && other.pointC.x <= x2 && other.pointC.y >= y1 && other.pointC.y <= y2)
+				return true;
+			else
+				return false;
+
+}
+
+bool jhObject2D::rectangle::isTrigleEnter(const rectangle& other)
+{
+	//矩形与矩形的碰撞检测
+	float x1 = this->position.x - this->width / 2;
+	float x2 = this->position.x + this->width / 2;
+	float y1 = this->position.y - this->height / 2;
+	float y2 = this->position.y + this->height / 2;
+	float x3 = other.position.x - other.width / 2;
+	float x4 = other.position.x + other.width / 2;
+	float y3 = other.position.y - other.height / 2;
+	float y4 = other.position.y + other.height / 2;
+	if (x1 <= x4 && x2 >= x3 && y1 <= y4 && y2 >= y3)
+		return true;
+	else
+		return false;
+
+}
+
+bool jhObject2D::rectangle::isTrigleEnter(const diamond& other)
+{
+	//矩形与菱形的碰撞检测
+	float x1 = this->position.x - this->width / 2;
+	float x2 = this->position.x + this->width / 2;
+	float y1 = this->position.y - this->height / 2;
+	float y2 = this->position.y + this->height / 2;
+	float x3 = other.position.x - other.lengthX / 2;
+	float x4 = other.position.x + other.lengthX / 2;
+	float y3 = other.position.y - other.lengthY / 2;
+	float y4 = other.position.y + other.lengthY / 2;
+	if (x1 <= x4 && x2 >= x3 && y1 <= y4 && y2 >= y3)
+		return true;
+	else
+		return false;
+
+}
+
+bool jhObject2D::rectangle::isTrigleEnter(const circle& other)
+{
+	//矩形与圆形的碰撞检测
+	float x1 = this->position.x - this->width / 2;
+	float x2 = this->position.x + this->width / 2;
+	float y1 = this->position.y - this->height / 2;
+	float y2 = this->position.y + this->height / 2;
+	if (other.position.x >= x1 && other.position.x <= x2 && other.position.y >= y1 && other.position.y <= y2)
+		return true;
+	else
+		return false;
+
 }
 
 jhObject2D::rectangle::rectangle(float width, float height):transform()
@@ -798,15 +921,166 @@ jhObject2D::rectangle::rectangle(float width, float height):transform()
 
 float jhObject2D::triangle::getAreaSize()
 {
-	float p = (this->sizeA + this->sizeB + this->sizeC) / 2;
-	return sqrt(p * (p - this->sizeA) * (p - this->sizeB) * (p - this->sizeC));
+	float a = this->pointA.destance(this->pointB);
+	float b = this->pointB.destance(this->pointC);
+	float c = this->pointC.destance(this->pointA);
+	float p = (a + b + c) / 2;
+	return sqrt(p * (p - a) * (p - b) * (p - c));
 }
 
-jhObject2D::triangle::triangle(float sizeA, float sizeB, float sizeC):transform()
+bool jhObject2D::triangle::isTrigleEnter(const triangle& other)
 {
-	this->sizeA = sizeA;
-	this->sizeB = sizeB;
-	this->sizeC = sizeC;
+	//三角形与三角形的碰撞检测
+	float x1 = this->pointA.x;
+	float y1 = this->pointA.y;
+	float x2 = this->pointB.x;
+	float y2 = this->pointB.y;
+	float x3 = this->pointC.x;
+	float y3 = this->pointC.y;
+	float x4 = other.pointA.x;
+	float y4 = other.pointA.y;
+	float x5 = other.pointB.x;
+	float y5 = other.pointB.y;
+	float x6 = other.pointC.x;
+	float y6 = other.pointC.y;
+	float a = (x1 - x2) * (y4 - y1) - (x4 - x1) * (y1 - y2);
+	float b = (x1 - x2) * (y5 - y1) - (x5 - x1) * (y1 - y2);
+	float c = (x1 - x2) * (y6 - y1) - (x6 - x1) * (y1 - y2);
+	if (a * b > 0 && a * c > 0)
+		return true;
+	else
+	{
+		a = (x2 - x3) * (y4 - y2) - (x4 - x2) * (y2 - y3);
+		b = (x2 - x3) * (y5 - y2) - (x5 - x2) * (y2 - y3);
+		c = (x2 - x3) * (y6 - y2) - (x6 - x2) * (y2 - y3);
+		if (a * b > 0 && a * c > 0)
+			return true;
+		else
+		{
+			a = (x3 - x1) * (y4 - y3) - (x4 - x3) * (y3 - y1);
+			b = (x3 - x1) * (y5 - y3) - (x5 - x3) * (y3 - y1);
+			c = (x3 - x1) * (y6 - y3) - (x6 - x3) * (y3 - y1);
+			if (a * b > 0 && a * c > 0)
+				return true;
+			else
+				return false;
+		}
+	}
+
+}
+
+bool jhObject2D::triangle::isTrigleEnter(const rectangle& other)
+{
+	//三角形与矩形的碰撞检测
+	float x1 = this->pointA.x;
+	float y1 = this->pointA.y;
+	float x2 = this->pointB.x;
+	float y2 = this->pointB.y;
+	float x3 = this->pointC.x;
+	float y3 = this->pointC.y;
+	float x4 = other.position.x - other.width / 2;
+	float x5 = other.position.x + other.width / 2;
+	float y4 = other.position.y - other.height / 2;
+	float y5 = other.position.y + other.height / 2;
+	if (x1 >= x4 && x1 <= x5 && y1 >= y4 && y1 <= y5)
+		return true;
+	else
+		if (x2 >= x4 && x2 <= x5 && y2 >= y4 && y2 <= y5)
+			return true;
+		else
+			if (x3 >= x4 && x3 <= x5 && y3 >= y4 && y3 <= y5)
+				return true;
+			else
+				return false;
+
+}
+
+bool jhObject2D::triangle::isTrigleEnter(const diamond& other)
+{
+	//三角形与菱形的碰撞检测
+	float x1 = this->pointA.x;
+	float y1 = this->pointA.y;
+	float x2 = this->pointB.x;
+	float y2 = this->pointB.y;
+	float x3 = this->pointC.x;
+	float y3 = this->pointC.y;
+	float x4 = other.position.x - other.lengthX / 2;
+	float x5 = other.position.x + other.lengthX / 2;
+	float y4 = other.position.y - other.lengthY / 2;
+	float y5 = other.position.y + other.lengthY / 2;
+	if (x1 >= x4 && x1 <= x5 && y1 >= y4 && y1 <= y5)
+		return true;
+	else
+		if (x2 >= x4 && x2 <= x5 && y2 >= y4 && y2 <= y5)
+			return true;
+		else
+			if (x3 >= x4 && x3 <= x5 && y3 >= y4 && y3 <= y5)
+				return true;
+			else
+				return false;
+
+}
+
+bool jhObject2D::triangle::isTrigleEnter(const circle& other)
+{
+	//三角形与圆形的碰撞检测
+	float x1 = this->pointA.x;
+	float y1 = this->pointA.y;
+	float x2 = this->pointB.x;
+	float y2 = this->pointB.y;
+	float x3 = this->pointC.x;
+	float y3 = this->pointC.y;
+	float x = other.position.x;
+	float y = other.position.y;
+	float a = (x - x1) * (y2 - y1) - (x2 - x1) * (y - y1);
+	float b = (x - x2) * (y3 - y2) - (x3 - x2) * (y - y2);
+	float c = (x - x3) * (y1 - y3) - (x1 - x3) * (y - y3);
+	if (a * b > 0 && a * c > 0)
+		return true;
+	else
+		return false;
+
+}
+
+jhObject2D::triangle::triangle(jhVector2 pointA, jhVector2 pointB, jhVector2 pointC)
+{
+	//计算三角形外接圆中心坐标
+	jhVector2 center;
+
+	// 计算中点坐标
+	jhVector2 midpointAB = { (pointA.x + pointB.x) / 2, (pointA.y + pointB.y) / 2 };
+	jhVector2 midpointBC = { (pointB.x + pointC.x) / 2, (pointB.y + pointC.y) / 2 };
+
+	// 计算边的斜率
+	double slopeAB = (pointB.y - pointA.y) / (pointB.x - pointA.x);
+	double slopeBC = (pointC.y - pointB.y) / (pointC.x - pointB.x);
+
+	// 计算中垂线的斜率
+	double perpendicularSlopeAB = -1 / slopeAB;
+	double perpendicularSlopeBC = -1 / slopeBC;
+
+	// 计算中垂线的截距
+	double interceptAB = midpointAB.y - perpendicularSlopeAB * midpointAB.x;
+	double interceptBC = midpointBC.y - perpendicularSlopeBC * midpointBC.x;
+
+	// 计算圆心坐标
+	center.x = (interceptBC - interceptAB) / (perpendicularSlopeAB - perpendicularSlopeBC);
+	center.y = perpendicularSlopeAB * center.x + interceptAB;
+
+	this->position = center;
+
+
+	this->pointA = pointA;
+	this->pointB = pointB;
+	this->pointC = pointC;
+}
+
+jhObject2D::triangle::triangle(jhVector2 center, float coLength)
+{
+	this->position = center;
+	this->pointA = jhVector2(center.x, center.y + coLength);
+	this->pointB = jhVector2(center.x + coLength * sqrt(3) / 2, center.y - coLength / 2);
+	this->pointC = jhVector2(center.x - coLength * sqrt(3) / 2, center.y - coLength / 2);
 }
 
 float jhObject2D::diamond::getAreaSize()
@@ -814,21 +1088,80 @@ float jhObject2D::diamond::getAreaSize()
 	return this->lengthX * this->lengthY / 2;
 }
 
+bool jhObject2D::diamond::isTrigleEnter(const triangle& other)
+{
+	//菱形与三角形的碰撞检测
+	float x1 = this->position.x - this->lengthX / 2;
+	float x2 = this->position.x + this->lengthX / 2;
+	float y1 = this->position.y - this->lengthY / 2;
+	float y2 = this->position.y + this->lengthY / 2;
+	if (other.pointA.x >= x1 && other.pointA.x <= x2 && other.pointA.y >= y1 && other.pointA.y <= y2)
+		return true;
+	else
+		if (other.pointB.x >= x1 && other.pointB.x <= x2 && other.pointB.y >= y1 && other.pointB.y <= y2)
+			return true;
+		else
+			if (other.pointC.x >= x1 && other.pointC.x <= x2 && other.pointC.y >= y1 && other.pointC.y <= y2)
+				return true;
+			else
+				return false;
+
+}
+
+bool jhObject2D::diamond::isTrigleEnter(const rectangle& other)
+{
+	//菱形与矩形的碰撞检测
+	float x1 = this->position.x - this->lengthX / 2;
+	float x2 = this->position.x + this->lengthX / 2;
+	float y1 = this->position.y - this->lengthY / 2;
+	float y2 = this->position.y + this->lengthY / 2;
+	float x3 = other.position.x - other.width / 2;
+	float x4 = other.position.x + other.width / 2;
+	float y3 = other.position.y - other.height / 2;
+	float y4 = other.position.y + other.height / 2;
+	if (x1 <= x4 && x2 >= x3 && y1 <= y4 && y2 >= y3)
+		return true;
+	else
+		return false;
+
+}
+
+bool jhObject2D::diamond::isTrigleEnter(const diamond& other)
+{
+	//菱形与菱形的碰撞检测
+	float x1 = this->position.x - this->lengthX / 2;
+	float x2 = this->position.x + this->lengthX / 2;
+	float y1 = this->position.y - this->lengthY / 2;
+	float y2 = this->position.y + this->lengthY / 2;
+	float x3 = other.position.x - other.lengthX / 2;
+	float x4 = other.position.x + other.lengthX / 2;
+	float y3 = other.position.y - other.lengthY / 2;
+	float y4 = other.position.y + other.lengthY / 2;
+	if (x1 <= x4 && x2 >= x3 && y1 <= y4 && y2 >= y3)
+		return true;
+	else
+		return false;
+
+}
+
+bool jhObject2D::diamond::isTrigleEnter(const circle& other)
+{
+	//菱形与圆形的碰撞检测
+	float x1 = this->position.x - this->lengthX / 2;
+	float x2 = this->position.x + this->lengthX / 2;
+	float y1 = this->position.y - this->lengthY / 2;
+	float y2 = this->position.y + this->lengthY / 2;
+	float x = other.position.x;
+	float y = other.position.y;
+	if (x >= x1 && x <= x2 && y >= y1 && y <= y2)
+		return true;
+	else
+		return false;
+
+}
+
 jhObject2D::diamond::diamond(float lengthX, float lengthY) : transform()
 {
 	this->lengthX = lengthX;
 	this->lengthY = lengthY;
-}
-
-float jhObject2D::trapezium::getAreaSize()
-{
-	return (this->lengehBelow + this->lengthAbove) * this->height / 2;
-}
-
-jhObject2D::trapezium::trapezium(float lengthAbove, float lengehBelow, float height, float interval_upMinusDown) :transform()
-{
-	this->lengthAbove = lengthAbove;
-	this->lengehBelow = lengehBelow;
-	this->height = height;
-	this->interval_upMinusDown = interval_upMinusDown;
 }

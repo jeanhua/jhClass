@@ -192,7 +192,6 @@ namespace jhObject2D
 	class rectangle;
 	class triangle;
 	class diamond;
-	class trapezium;
 
 	//类的实现
 
@@ -204,12 +203,18 @@ namespace jhObject2D
 		transform();
 		// 位置(图形中心坐标，即外接圆中心坐标)
 		jhVector2 position;
-		// 旋转角度(图形绕中心点逆时针旋转的角度,弧度制)
-		float rotate;
 		// 计算面积
 		virtual float getAreaSize() = 0;
 		// 计算距离
 		float getDistance(const transform& other);
+		// 判断是否在三角形内
+		virtual bool isTrigleEnter(const triangle& other) = 0;
+		// 判断是否在矩形内
+		virtual bool isTrigleEnter(const rectangle& other) = 0;
+		// 判断是否在菱形内
+		virtual bool isTrigleEnter(const diamond& other) = 0;
+		// 判断是否在圆形内
+		virtual bool isTrigleEnter(const circle& other) = 0;
 	};
 
 	// 圆形
@@ -219,6 +224,10 @@ namespace jhObject2D
 		circle(float radius);
 		float radius;
 		virtual float getAreaSize();
+		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const circle& other);
 	};
 
 	// 矩形
@@ -229,15 +238,26 @@ namespace jhObject2D
 		float width;
 		float height;
 		virtual float getAreaSize();
+		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const circle& other);
+
 	};
 
 	// 三角形
 	class triangle :public transform
 	{
 	public:
-		triangle(float sizeA, float sizeB, float sizeC);
-		float sizeA, sizeB, sizeC;
+		triangle(jhVector2 pointA, jhVector2 pointB, jhVector2 pointC);
+		triangle(jhVector2 center, float coLength);
+		jhVector2 pointA, pointB, pointC;
 		virtual float getAreaSize();
+		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const circle& other);
+
 	};
 
 	// 菱形
@@ -247,14 +267,10 @@ namespace jhObject2D
 		diamond(float lengthX, float lengthY);
 		float lengthX, lengthY;
 		virtual float getAreaSize();
-	};
+		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const circle& other);
 
-	// 梯形
-	class trapezium :public transform
-	{
-	public:
-		trapezium(float lengthAbove, float lengehBelow, float height, float interval_upMinusDown);
-		float lengthAbove, lengehBelow, height, interval_upMinusDown;
-		virtual float getAreaSize();
 	};
 };
