@@ -1,6 +1,4 @@
 #include "jhClass.h"
-#include<stdexcept>
-#include<cmath>
 
 ostream& operator<<(ostream& cout,const jhString& str)
 {
@@ -67,6 +65,10 @@ bool jhString::operator==(const jhString& str)
 int jhString::to_int()
 {
 	return atoi(this->str.c_str());
+}
+char* jhString::to_char()
+{
+	return (char*)(this->str.c_str());
 }
 float jhString::to_float()
 {
@@ -500,7 +502,6 @@ template<typename T>
 jhList<T>::jhList()
 {
 	p_first = NULL;
-	node_num = 0;
 }
 
 template<typename T>
@@ -847,6 +848,16 @@ jhObject2D::transform::transform()
 	position = jhVector2(0, 0);
 }
 
+jhObject2D::transform::transform(const transform& other)
+{
+	this->position = other.position;
+}
+
+jhObject2D::transform::transform(jhVector2 position)
+{
+	this->position = position;
+}
+
 jhVector2 jhObject2D::transform::getPosition()
 {
 	return this->position;
@@ -857,9 +868,16 @@ float jhObject2D::transform::getDistance(const transform& other)
 	return this->position.destance(other.position);
 }
 
-jhObject2D::circle::circle(float radius):transform()
+jhObject2D::circle::circle(float radius, jhVector2 position):transform()
 {
 	this->radius = radius;
+	this->position = position;
+}
+
+jhObject2D::circle::circle(const circle& other)
+{
+	this->position = other.position;
+	this->radius = other.radius;
 }
 
 float jhObject2D::circle::getAreaSize()
@@ -870,6 +888,11 @@ float jhObject2D::circle::getAreaSize()
 void jhObject2D::circle::move(jhVector2 dest)
 {
 	this->position = dest;
+}
+
+jhVector2 jhObject2D::circle::getLeftTopPosition()
+{
+	return jhVector2(this->position.x - this->radius, this->position.y - this->radius);
 }
 
 bool jhObject2D::circle::isTrigleEnter(const triangle& other)
@@ -934,6 +957,11 @@ float jhObject2D::rectangle::getAreaSize()
 void jhObject2D::rectangle::move(jhVector2 dest)
 {
 	this->position = dest;
+}
+
+jhVector2 jhObject2D::rectangle::getLeftTopPosition()
+{
+	return jhVector2(this->position.x - this->width / 2, this->position.y - this->height / 2);
 }
 
 bool jhObject2D::rectangle::isTrigleEnter(const triangle& other)
@@ -1006,10 +1034,18 @@ bool jhObject2D::rectangle::isTrigleEnter(const circle& other)
 
 }
 
-jhObject2D::rectangle::rectangle(float width, float height):transform()
+jhObject2D::rectangle::rectangle(float width, float height, jhVector2 position):transform()
 {
 	this->width = width;
 	this->height = height;
+	this->position = position;
+}
+
+jhObject2D::rectangle::rectangle(const rectangle& other)
+{
+	this->position = other.position;
+	this->width = other.width;
+	this->height = other.height;
 }
 
 float jhObject2D::triangle::getAreaSize()
@@ -1176,6 +1212,14 @@ jhObject2D::triangle::triangle(jhVector2 center, float coLength)
 	this->pointC = jhVector2(center.x - coLength * sqrt(3) / 2, center.y - coLength / 2);
 }
 
+jhObject2D::triangle::triangle(const triangle& other)
+{
+	this->position = other.position;
+	this->pointA = other.pointA;
+	this->pointB = other.pointB;
+	this->pointC = other.pointC;
+}
+
 void jhObject2D::triangle::move(jhVector2 dest)
 {
 	jhVector2 offset = dest - this->position;
@@ -1200,6 +1244,13 @@ jhVector2 jhObject2D::triangle::getPositionC()
 	return this->pointC;
 }
 
+jhVector2 jhObject2D::triangle::getLeftTopPosition()
+{
+	float minX = min(this->pointA.x, min(this->pointB.x, this->pointC.x));
+	float minY = min(this->pointA.y, min(this->pointB.y, this->pointC.y));
+	return jhVector2(minX, minY);
+}
+
 float jhObject2D::diamond::getAreaSize()
 {
 	return this->lengthX * this->lengthY / 2;
@@ -1208,6 +1259,11 @@ float jhObject2D::diamond::getAreaSize()
 void jhObject2D::diamond::move(jhVector2 dest)
 {
 	this->position = dest;
+}
+
+jhVector2 jhObject2D::diamond::getLeftTopPosition()
+{
+	return jhVector2(this->position.x - this->lengthX / 2, this->position.y - this->lengthY / 2);
 }
 
 bool jhObject2D::diamond::isTrigleEnter(const triangle& other)
@@ -1282,8 +1338,16 @@ bool jhObject2D::diamond::isTrigleEnter(const circle& other)
 
 }
 
-jhObject2D::diamond::diamond(float lengthX, float lengthY) : transform()
+jhObject2D::diamond::diamond(float lengthX, float lengthY,jhVector2 position) : transform()
 {
 	this->lengthX = lengthX;
 	this->lengthY = lengthY;
+	this->position = position;
+}
+
+jhObject2D::diamond::diamond(const diamond& other)
+{
+	this->position = other.position;
+	this->lengthX = other.lengthX;
+	this->lengthY = other.lengthY;
 }

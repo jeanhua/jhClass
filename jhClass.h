@@ -1,6 +1,7 @@
 #pragma once
 #include<string>
 #include<iostream>
+#include<stdexcept>
 #include<cmath>
 using namespace std;
 
@@ -11,7 +12,7 @@ using namespace std;
 #define PI 3.14
 
 // 类的声明
-class jhstring;
+class jhString;
 class jhFraction;
 class jhVector2;
 template<typename T> class jhList;
@@ -39,6 +40,8 @@ public:
 	bool operator==(const jhString& str);
 	//字符串转换为整型数据(如果可以)
 	int to_int();
+	//转换为char*
+	char* to_char();
 	//字符串转换为浮点型数据(如果可以)
 	float to_float();
 	//返回字符串索引，从0开始
@@ -253,22 +256,29 @@ namespace jhObject2D
 		friend class diamond;
 		// 默认构造函数
 		transform();
+		//拷贝构造函数
+		transform(const transform& other);
+		// 构造函数
+		transform(jhVector2 position);
+
 		//移动
-		virtual void move(jhVector2 dest) = 0;
+		virtual void move(jhVector2 dest);
 		//获取当前位置
 		virtual jhVector2 getPosition();
 		// 计算面积
-		virtual float getAreaSize() = 0;
+		virtual float getAreaSize();
 		// 计算距离
 		float getDistance(const transform& other);
+		//获取左上角坐标
+		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
-		virtual bool isTrigleEnter(const triangle& other) = 0;
+		virtual bool isTrigleEnter(const triangle& other);
 		// 判断是否在矩形内
-		virtual bool isTrigleEnter(const rectangle& other) = 0;
+		virtual bool isTrigleEnter(const rectangle& other);
 		// 判断是否在菱形内
-		virtual bool isTrigleEnter(const diamond& other) = 0;
+		virtual bool isTrigleEnter(const diamond& other);
 		// 判断是否在圆形内
-		virtual bool isTrigleEnter(const circle& other) = 0;
+		virtual bool isTrigleEnter(const circle& other);
 	private:
 		// 位置(图形中心坐标，即外接圆中心坐标)
 		jhVector2 position;
@@ -279,13 +289,17 @@ namespace jhObject2D
 	{
 	public:
 		// 默认构造函数
-		circle(float radius);
+		circle(float radius,jhVector2 position = jhVector2(0,0));
+		// 拷贝构造函数
+		circle(const circle& other);
 		// 半径
 		float radius;
 		// 获取面积
 		virtual float getAreaSize();
 		// 移动
 		virtual void move(jhVector2 dest);
+		//获取左上角坐标
+		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
 		// 判断是否在矩形内
@@ -301,7 +315,9 @@ namespace jhObject2D
 	{
 	public:
 		// 默认构造函数
-		rectangle(float width, float height);
+		rectangle(float width, float height,jhVector2 position = jhVector2(0,0));
+		// 拷贝构造函数
+		rectangle(const rectangle& other);
 		// 宽度和高度
 		float width;
 		// 高度
@@ -310,6 +326,8 @@ namespace jhObject2D
 		virtual float getAreaSize();
 		// 移动
 		virtual void move(jhVector2 dest);
+		//获取左上角坐标
+		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
 		// 判断是否在矩形内
@@ -329,6 +347,8 @@ namespace jhObject2D
 		triangle(jhVector2 pointA, jhVector2 pointB, jhVector2 pointC);
 		// 构造等边三角形
 		triangle(jhVector2 center, float coLength);
+		// 拷贝构造函数
+		triangle(const triangle& other);
 		// 移动
 		virtual void move(jhVector2 dest);
 		// 三个顶点
@@ -339,6 +359,8 @@ namespace jhObject2D
 		jhVector2 getPositionB();
 		// 获取点C的坐标
 		jhVector2 getPositionC();
+		//获取左上角坐标
+		virtual jhVector2 getLeftTopPosition();
 		// 获取面积
 		virtual float getAreaSize();
 		// 判断是否在三角形内
@@ -356,13 +378,17 @@ namespace jhObject2D
 	{
 	public:
 		// 以对角线长度构造菱形
-		diamond(float lengthX, float lengthY);
+		diamond(float lengthX, float lengthY,jhVector2 position = jhVector2(0,0));
+		//拷贝构造函数
+		diamond(const diamond& other);
 		// 对角线长度
 		float lengthX, lengthY;
 		// 获取面积
 		virtual float getAreaSize();
 		// 移动
 		virtual void move(jhVector2 dest);
+		//获取左上角坐标
+		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
 		// 判断是否在矩形内
