@@ -24,18 +24,36 @@ jhString::jhString(const char* str)
 {
 	this->str = string(str);
 }
+jhString::jhString(const jhString& str)
+{
+	this->str = str.str;
+}
 jhString jhString::operator+(const jhString& str)
 {
 	return jhString(this->str + str.str);
+}
+jhString jhString::operator+(const string& str)
+{
+	return jhString(this->str + str);
 }
 jhString jhString::operator=(const jhString& str)
 {
 	this->str = str.str;
 	return *this;
 }
+jhString jhString::operator=(const string& str)
+{
+	this->str = str;
+	return *this;
+}
 jhString jhString::operator+=(const jhString& str)
 {
 	this->str += str.str;
+	return *this;
+}
+jhString jhString::operator+=(const string& str)
+{
+	this->str += str;
 	return *this;
 }
 bool jhString::operator==(const jhString& str)
@@ -151,6 +169,11 @@ jhFraction::jhFraction()
 {
 	s = 0; m = 1;
 }
+jhFraction::jhFraction(const jhFraction& num)
+{
+	s = num.s;
+	m = num.m;
+}
 jhFraction::jhFraction(int sm)
 {
 	s = sm;
@@ -189,17 +212,61 @@ jhFraction jhFraction::operator+(const jhFraction& num)
 {
 	return jhFraction(this->s * num.m + this->m * num.s, this->m * num.m);
 }
+jhFraction jhFraction::operator+(float num)
+{
+	return jhFraction(this->to_float() + num);
+}
+jhFraction& jhFraction::operator+=(float num)
+{
+	*this = *this + num;
+	return *this;
+}
 jhFraction jhFraction::operator-(const jhFraction& num)
 {
 	return jhFraction(this->s * num.m - this->m * num.s, this->m * num.m);
+}
+jhFraction jhFraction::operator-(float num)
+{
+	return jhFraction(this->to_float() - num);
 }
 jhFraction jhFraction::operator*(const jhFraction& num)
 {
 	return jhFraction(this->s * num.s, this->m * num.m);
 }
+jhFraction jhFraction::operator*(float num)
+{
+	return jhFraction(this->to_float() * num);
+}
+jhFraction jhFraction::operator*=(float num)
+{
+	*this = *this * num;
+	return *this;
+}
+jhFraction jhFraction::operator=(const jhFraction& num)
+{
+	this->s = num.s;
+	this->m = num.m;
+	return *this;
+}
 jhFraction jhFraction::operator/(const jhFraction& num)
 {
 	return jhFraction(this->s * num.m, this->m * num.s);
+}
+jhFraction jhFraction::operator/(float num)
+{
+	return jhFraction(this->to_float() / num);
+}
+jhFraction jhFraction::operator/=(float num)
+{
+	if(num!=0)
+	{
+		*this = *this / num;
+	}
+	else
+	{
+		throw std::invalid_argument("Can't be divided by 0");
+	}
+	return *this;
 }
 bool jhFraction::operator>(const jhFraction& num)
 {
@@ -286,6 +353,12 @@ jhFraction& jhFraction::operator-=(const jhFraction& num)
 	return *this;
 }
 
+jhFraction& jhFraction::operator-=(float num)
+{
+	*this = *this - num;
+	return *this;
+}
+
 jhVector2::jhVector2()
 {
 	x = 0; y = 0;
@@ -294,6 +367,11 @@ jhVector2::jhVector2(float x, float y)
 {
 	this->x = x;
 	this->y = y;
+}
+jhVector2::jhVector2(const jhVector2& v2)
+{
+	this->x = v2.x;
+	this->y = v2.y;
 }
 jhVector2& jhVector2::operator=(const jhVector2& v2)
 {
@@ -769,6 +847,11 @@ jhObject2D::transform::transform()
 	position = jhVector2(0, 0);
 }
 
+jhVector2 jhObject2D::transform::getPosition()
+{
+	return this->position;
+}
+
 float jhObject2D::transform::getDistance(const transform& other)
 {
 	return this->position.destance(other.position);
@@ -782,6 +865,11 @@ jhObject2D::circle::circle(float radius):transform()
 float jhObject2D::circle::getAreaSize()
 {
 	return PI * this->radius * this->radius;
+}
+
+void jhObject2D::circle::move(jhVector2 dest)
+{
+	this->position = dest;
 }
 
 bool jhObject2D::circle::isTrigleEnter(const triangle& other)
@@ -841,6 +929,11 @@ bool jhObject2D::circle::isTrigleEnter(const circle& other)
 float jhObject2D::rectangle::getAreaSize()
 {
 	return this->height * this->width;
+}
+
+void jhObject2D::rectangle::move(jhVector2 dest)
+{
+	this->position = dest;
 }
 
 bool jhObject2D::rectangle::isTrigleEnter(const triangle& other)
@@ -1083,9 +1176,38 @@ jhObject2D::triangle::triangle(jhVector2 center, float coLength)
 	this->pointC = jhVector2(center.x - coLength * sqrt(3) / 2, center.y - coLength / 2);
 }
 
+void jhObject2D::triangle::move(jhVector2 dest)
+{
+	jhVector2 offset = dest - this->position;
+	this->pointA += offset;
+	this->pointB += offset;
+	this->pointC += offset;
+	this->position = dest;
+}
+
+jhVector2 jhObject2D::triangle::getPositionA()
+{
+	return this->pointA;
+}
+
+jhVector2 jhObject2D::triangle::getPositionB()
+{
+	return this->pointB;
+}
+
+jhVector2 jhObject2D::triangle::getPositionC()
+{
+	return this->pointC;
+}
+
 float jhObject2D::diamond::getAreaSize()
 {
 	return this->lengthX * this->lengthY / 2;
+}
+
+void jhObject2D::diamond::move(jhVector2 dest)
+{
+	this->position = dest;
 }
 
 bool jhObject2D::diamond::isTrigleEnter(const triangle& other)

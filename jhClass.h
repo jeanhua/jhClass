@@ -21,14 +21,21 @@ class jhMatrix;
 class jhString
 {
 public:
+	//友元类
 	friend ostream& operator<<(ostream& cout,const jhString& str);
 	friend istream& operator>>(istream& cin,const jhString& str);
+	//构造函数
 	jhString();
 	jhString(const string& str);
 	jhString(const char* str);
+	jhString(const jhString& str);
+	//运算符重载
 	jhString operator+(const jhString& str);
+	jhString operator+(const string& str);
 	jhString operator=(const jhString& str);
+	jhString operator=(const string& str);
 	jhString operator+=(const jhString& str);
+	jhString operator+=(const string& str);
 	bool operator==(const jhString& str);
 	//字符串转换为整型数据(如果可以)
 	int to_int();
@@ -53,21 +60,48 @@ private:
 class jhFraction
 {
 public:
+	//友元类
 	friend ostream& operator<<(ostream& cout,const jhFraction& num);
 	friend istream& operator>>(istream& cin,jhFraction& num);
+	//构造函数
 	jhFraction();
+	//拷贝构造函数
+	jhFraction(const jhFraction& num);
+	//构造函数
 	jhFraction(int num);
 	jhFraction(double num);
 	jhFraction(int s,int m);
+	//化简
 	void simplify();
+	//打印
 	void print();
+	//转换为浮点数
 	float to_float();
+	//加法运算符重载
 	jhFraction operator+(const jhFraction& num);
+	jhFraction operator+(float num);
+	//加等于运算符重载
+	jhFraction& operator+=(float num);
 	jhFraction& operator+=(const jhFraction& num);
+	//减法运算符重载
 	jhFraction operator-(const jhFraction& num);
+	jhFraction operator-(float num);
+	//减等于运算符重载
 	jhFraction& operator-=(const jhFraction& num);
+	jhFraction& operator-=(float num);
+	//乘法运算符重载
 	jhFraction operator*(const jhFraction& num);
+	jhFraction operator*(float num);
+	//乘等于运算符重载
+	jhFraction operator*=(float num);
+	//等于运算符重载
+	jhFraction operator=(const jhFraction& num);
+	//除法运算符重载
 	jhFraction operator/(const jhFraction& num);
+	jhFraction operator/(float num);
+	//除等于运算符重载
+	jhFraction operator/=(float num);
+	//比较运算符重载
 	bool operator>(const jhFraction& num);
 	bool operator>(float num);
 	bool operator>=(const jhFraction& num);
@@ -86,16 +120,29 @@ private:
 class jhVector2
 {
 public:
+	//友元类
 	float x, y;
+	//默认构造函数
 	jhVector2();
+	//构造函数
 	jhVector2(float x,float y);
+	//拷贝构造函数
+	jhVector2(const jhVector2& v2);
+	//赋值运算符重载
 	jhVector2& operator=(const jhVector2& v2);
+	//加法运算符重载
 	jhVector2 operator+(const jhVector2& v2);
+	//加等于运算符重载
 	jhVector2& operator+=(const jhVector2& v2);
+	//减法运算符重载
 	jhVector2 operator-(const jhVector2& v2);
+	//减等于运算符重载
 	jhVector2& operator-=(const jhVector2& v2);
+	//乘法运算符重载
 	jhVector2 operator*(float i);
+	//除法运算符重载
 	jhVector2 operator/(float i);
+	//判断是否相等
 	bool operator==(const jhVector2& v2);
 	//求坐标距离
 	double destance(const jhVector2& objective);
@@ -199,10 +246,17 @@ namespace jhObject2D
 	class transform
 	{
 	public:
+		//友元类
+		friend class circle;
+		friend class rectangle;
+		friend class triangle;
+		friend class diamond;
 		// 默认构造函数
 		transform();
-		// 位置(图形中心坐标，即外接圆中心坐标)
-		jhVector2 position;
+		//移动
+		virtual void move(jhVector2 dest) = 0;
+		//获取当前位置
+		virtual jhVector2 getPosition();
 		// 计算面积
 		virtual float getAreaSize() = 0;
 		// 计算距离
@@ -215,18 +269,30 @@ namespace jhObject2D
 		virtual bool isTrigleEnter(const diamond& other) = 0;
 		// 判断是否在圆形内
 		virtual bool isTrigleEnter(const circle& other) = 0;
+	private:
+		// 位置(图形中心坐标，即外接圆中心坐标)
+		jhVector2 position;
 	};
 
 	// 圆形
 	class circle :public transform
 	{
 	public:
+		// 默认构造函数
 		circle(float radius);
+		// 半径
 		float radius;
+		// 获取面积
 		virtual float getAreaSize();
+		// 移动
+		virtual void move(jhVector2 dest);
+		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
+		// 判断是否在矩形内
 		virtual bool isTrigleEnter(const rectangle& other);
+		// 判断是否在菱形内
 		virtual bool isTrigleEnter(const diamond& other);
+		// 判断是否在圆形内
 		virtual bool isTrigleEnter(const circle& other);
 	};
 
@@ -234,13 +300,23 @@ namespace jhObject2D
 	class rectangle :public transform
 	{
 	public:
+		// 默认构造函数
 		rectangle(float width, float height);
+		// 宽度和高度
 		float width;
+		// 高度
 		float height;
+		// 获取面积
 		virtual float getAreaSize();
+		// 移动
+		virtual void move(jhVector2 dest);
+		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
+		// 判断是否在矩形内
 		virtual bool isTrigleEnter(const rectangle& other);
+		// 判断是否在菱形内
 		virtual bool isTrigleEnter(const diamond& other);
+		// 判断是否在圆形内
 		virtual bool isTrigleEnter(const circle& other);
 
 	};
@@ -249,27 +325,51 @@ namespace jhObject2D
 	class triangle :public transform
 	{
 	public:
+		// 构造普通三角形
 		triangle(jhVector2 pointA, jhVector2 pointB, jhVector2 pointC);
+		// 构造等边三角形
 		triangle(jhVector2 center, float coLength);
+		// 移动
+		virtual void move(jhVector2 dest);
+		// 三个顶点
 		jhVector2 pointA, pointB, pointC;
+		// 获取点A的坐标
+		jhVector2 getPositionA();
+		// 获取点B的坐标
+		jhVector2 getPositionB();
+		// 获取点C的坐标
+		jhVector2 getPositionC();
+		// 获取面积
 		virtual float getAreaSize();
+		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
+		// 判断是否在矩形内
 		virtual bool isTrigleEnter(const rectangle& other);
+		// 判断是否在菱形内
 		virtual bool isTrigleEnter(const diamond& other);
+		// 判断是否在圆形内
 		virtual bool isTrigleEnter(const circle& other);
-
 	};
 
 	// 菱形
 	class diamond :public transform
 	{
 	public:
+		// 以对角线长度构造菱形
 		diamond(float lengthX, float lengthY);
+		// 对角线长度
 		float lengthX, lengthY;
+		// 获取面积
 		virtual float getAreaSize();
+		// 移动
+		virtual void move(jhVector2 dest);
+		// 判断是否在三角形内
 		virtual bool isTrigleEnter(const triangle& other);
+		// 判断是否在矩形内
 		virtual bool isTrigleEnter(const rectangle& other);
+		// 判断是否在菱形内
 		virtual bool isTrigleEnter(const diamond& other);
+		// 判断是否在圆形内
 		virtual bool isTrigleEnter(const circle& other);
 
 	};
