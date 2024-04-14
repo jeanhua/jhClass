@@ -15,7 +15,7 @@ using namespace std;
 class jhString;
 class jhFraction;
 class jhVector2;
-template<typename T> class jhList;
+template<class T> class jhList;
 class jhMatrix;
 
 //jhString类:字符串类型
@@ -38,6 +38,8 @@ public:
 	jhString operator+=(const jhString& str);
 	jhString operator+=(const string& str);
 	bool operator==(const jhString& str);
+	bool operator<(const jhString& str)const;
+	bool operator>(const jhString& str)const;
 	//字符串转换为整型数据(如果可以)
 	int to_int();
 	//转换为char*
@@ -158,7 +160,7 @@ public:
 };
 
 //jhList:链表模板类(无序链表)
-template<typename T>
+template<class T>
 class jhList
 {
 public:
@@ -230,7 +232,7 @@ public:
 	jhMatrix operator-(const jhMatrix& other);
 	jhMatrix operator*(const jhMatrix& other);
 	jhMatrix operator*(float num);
-	jhMatrix operator=(const jhMatrix& other);
+	void operator=(const jhMatrix& other);
 	bool operator==(const jhMatrix& other);
 };
 
@@ -262,23 +264,23 @@ namespace jhObject2D
 		transform(jhVector2 position);
 
 		//移动
-		virtual void move(jhVector2 dest);
+		virtual void move(jhVector2 dest)=0;
 		//获取当前位置
 		virtual jhVector2 getPosition();
 		// 计算面积
-		virtual float getAreaSize();
+		virtual float getAreaSize()=0;
 		// 计算距离
 		float getDistance(const transform& other);
 		//获取左上角坐标
-		virtual jhVector2 getLeftTopPosition();
+		virtual jhVector2 getLeftTopPosition()=0;
 		// 判断是否在三角形内
-		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const triangle& other) =0;
 		// 判断是否在矩形内
-		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const rectangle& other)=0;
 		// 判断是否在菱形内
-		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const diamond& other) =0;
 		// 判断是否在圆形内
-		virtual bool isTrigleEnter(const circle& other);
+		virtual bool isTrigleEnter(const circle& other)=0;
 	private:
 		// 位置(图形中心坐标，即外接圆中心坐标)
 		jhVector2 position;
@@ -301,13 +303,13 @@ namespace jhObject2D
 		//获取左上角坐标
 		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
-		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const triangle& other) override;
 		// 判断是否在矩形内
-		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const rectangle& other) override;
 		// 判断是否在菱形内
-		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const diamond& other) override;
 		// 判断是否在圆形内
-		virtual bool isTrigleEnter(const circle& other);
+		virtual bool isTrigleEnter(const circle& other) override;
 	};
 
 	// 矩形
@@ -329,13 +331,13 @@ namespace jhObject2D
 		//获取左上角坐标
 		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
-		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const triangle& other) override;
 		// 判断是否在矩形内
-		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const rectangle& other) override;
 		// 判断是否在菱形内
-		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const diamond& other) override;
 		// 判断是否在圆形内
-		virtual bool isTrigleEnter(const circle& other);
+		virtual bool isTrigleEnter(const circle& other) override;
 
 	};
 
@@ -364,13 +366,13 @@ namespace jhObject2D
 		// 获取面积
 		virtual float getAreaSize();
 		// 判断是否在三角形内
-		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const triangle& other) override ;
 		// 判断是否在矩形内
-		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const rectangle& other) override;
 		// 判断是否在菱形内
-		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const diamond& other) override;
 		// 判断是否在圆形内
-		virtual bool isTrigleEnter(const circle& other);
+		virtual bool isTrigleEnter(const circle& other) override;
 	};
 
 	// 菱形
@@ -390,13 +392,13 @@ namespace jhObject2D
 		//获取左上角坐标
 		virtual jhVector2 getLeftTopPosition();
 		// 判断是否在三角形内
-		virtual bool isTrigleEnter(const triangle& other);
+		virtual bool isTrigleEnter(const triangle& other) override;
 		// 判断是否在矩形内
-		virtual bool isTrigleEnter(const rectangle& other);
+		virtual bool isTrigleEnter(const rectangle& other) override;
 		// 判断是否在菱形内
-		virtual bool isTrigleEnter(const diamond& other);
+		virtual bool isTrigleEnter(const diamond& other) override;
 		// 判断是否在圆形内
-		virtual bool isTrigleEnter(const circle& other);
+		virtual bool isTrigleEnter(const circle& other) override;
 
 	};
 };

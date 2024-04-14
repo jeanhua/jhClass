@@ -62,6 +62,22 @@ bool jhString::operator==(const jhString& str)
 	}
 	else return false;
 }
+bool jhString::operator<(const jhString& str)const
+{
+	if(this->str<str.str)
+	{
+		return true;
+	}
+	else return false;
+}
+bool jhString::operator>(const jhString& str)const
+{
+	if(this->str>str.str)
+	{
+		return true;
+	}
+	else return false;
+}
 int jhString::to_int()
 {
 	return atoi(this->str.c_str());
@@ -439,8 +455,8 @@ void jhVector2::rotate(const jhVector2& center, float angle)
 	this->y = (x - center.x) * s + (y - center.y) * c + center.y;
 }
 
-template<typename T>
-void jhList<T>::addList(T value)
+template<class T>
+inline void jhList<T>::addList(T value)
 {
 	node* newlist = new node;
 	newlist->p_next = NULL;
@@ -462,8 +478,8 @@ void jhList<T>::addList(T value)
 	}
 }
 
-template<typename T>
-void jhList<T>::deleteList(node* list)
+template<class T>
+inline void jhList<T>::deleteList(node* list)
 {
 	if (list->p_back != NULL)
 	{
@@ -498,14 +514,14 @@ void jhList<T>::deleteList(node* list)
 	}
 }
 
-template<typename T>
-jhList<T>::jhList()
+template<class T>
+inline jhList<T>::jhList()
 {
 	p_first = NULL;
 }
 
-template<typename T>
-jhList<T>::~jhList()
+template<class T>
+inline jhList<T>::~jhList()
 {
 	node* now = this->p_first;
 	while (now!=NULL)
@@ -515,18 +531,6 @@ jhList<T>::~jhList()
 		delete tmp;
 	}
 }
-//Ä£°åÊµÀý»¯
-template class jhList<int>;
-template class jhList<char>;
-template class jhList<float>;
-template class jhList<double>;
-template class jhList<string>;
-template class jhList<jhString>;
-template class jhList<jhFraction>;
-template class jhList<jhVector2>;
-template class jhList<void*>;
-
-
 
 jhMatrix::jhMatrix(int row, int column)
 {
@@ -816,7 +820,7 @@ jhMatrix jhMatrix::operator*(float num)
 	return result;
 }
 
-jhMatrix jhMatrix::operator=(const jhMatrix& other)
+void jhMatrix::operator=(const jhMatrix& other)
 {
 	this->row = other.row;
 	this->column = other.column;
@@ -868,6 +872,7 @@ float jhObject2D::transform::getDistance(const transform& other)
 	return this->position.destance(other.position);
 }
 
+
 jhObject2D::circle::circle(float radius, jhVector2 position):transform()
 {
 	this->radius = radius;
@@ -894,6 +899,7 @@ jhVector2 jhObject2D::circle::getLeftTopPosition()
 {
 	return jhVector2(this->position.x - this->radius, this->position.y - this->radius);
 }
+
 
 bool jhObject2D::circle::isTrigleEnter(const triangle& other)
 {
